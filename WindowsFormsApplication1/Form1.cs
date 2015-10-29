@@ -79,7 +79,6 @@ namespace WindowsFormsApplication1
 
         private void UpdateUI(object sender, ProgressChangedEventArgs e)
         {
-            Console.WriteLine("update ui");
             ExperienceData experienceData = (ExperienceData)e.UserState;
 
             float basePercent = (experienceData.currentBaseExperience / (float)experienceData.requiredBaseExperience) * 100;
