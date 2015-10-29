@@ -24,8 +24,8 @@ namespace WindowsFormsApplication1
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [Out] byte[] lpBuffer, int dwSize, out int lpNumberOfBytesRead);
 
-        const int CURRENT_BASE_EXPERIENCE_ADDRESS = 0x3348100C;
-        const int REQURED_BASE_EXPERIENCE_ADDRESS = 0x33481010;
+        const int CURRENT_BASE_EXPERIENCE_ADDRESS = 0x33D32E8C;
+        const int REQURED_BASE_EXPERIENCE_ADDRESS = 0x33D32E90;
 
         public Form1()
         {
