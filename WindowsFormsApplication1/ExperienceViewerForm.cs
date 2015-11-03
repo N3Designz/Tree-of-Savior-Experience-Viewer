@@ -79,6 +79,9 @@ namespace TreeOfSaviorExperienceViewer
             }
         }
 
+        private int baseExperienceGained = 0;
+        private double baseExperiencePerHour = 0;
+        
         private void UpdateExperience(object sender, DoWorkEventArgs e)
         {
             Process process = Process.GetProcessesByName("Client_tos")[0];
@@ -102,27 +105,40 @@ namespace TreeOfSaviorExperienceViewer
                 
                 experienceData.currentBaseExperience = currentBaseExperience;
                 experienceData.requiredBaseExperience = requiredBaseExperience;
-
-                //getCurrentBaseExperience(process);
-
+                
                 if(experienceData.currentBaseExperience != experienceData.previousBaseExperience)
                 {
                     experienceData.lastKillExperience = experienceData.currentBaseExperience - experienceData.previousBaseExperience;
+                    baseExperienceGained += experienceData.lastKillExperience;
+                    Console.WriteLine("not equal: " + baseExperienceGained);
+                    
                     experienceData.baseKillsTilNextLevel = (experienceData.requiredBaseExperience - experienceData.currentBaseExperience) / (float)experienceData.lastKillExperience;
 
                     experienceData.previousBaseExperience = experienceData.currentBaseExperience;
 
                     backgroundWorker.ReportProgress(100, experienceData);
+
+                    if(!started)
+                    {
+                        baseExperienceGained = 0;
+                        experienceData.lastKillExperience = 0;
+                        started = true;
+                    }
                 }
+
+                TimeSpan elapsedTime = DateTime.Now - Process.GetCurrentProcess().StartTime;
+                baseExperiencePerHour = baseExperienceGained * (3600000 / elapsedTime.TotalMilliseconds);
             }
         }
+
+        private bool started = false;
 
         private IntPtr getCurrentBaseExperience(Process process)
         {
             var offsetList = new int[] { 0x10C };
             var buffer = new byte[4];
             var lpOutStorage = 0;
-            IntPtr currentAddress = new IntPtr(0x01486EE8);
+            IntPtr currentAddress = new IntPtr(0x01487F30);
 
             ReadProcessMemory(process.Handle, currentAddress, buffer, buffer.Length, out lpOutStorage);
 
@@ -149,19 +165,20 @@ namespace TreeOfSaviorExperienceViewer
             
             return currentAddress;
         }
-
+        
         private void UpdateUI(object sender, ProgressChangedEventArgs e)
         {
             ExperienceData experienceData = (ExperienceData)e.UserState;
 
             float basePercent = (experienceData.currentBaseExperience / (float)experienceData.requiredBaseExperience) * 100;
-
+            
             currentBaseExperienceLabel.Text = experienceData.currentBaseExperience.ToString("N0");
             requiredBaseExperienceLabel.Text = experienceData.requiredBaseExperience.ToString("N0");
             currentBaseExperiencePercentLabel.Text = basePercent.ToString() + "%";
             experienceFromLastKillLabel.Text = experienceData.lastKillExperience.ToString("N0");
-            baseKillsTilNextLevelLabel.Text = experienceData.baseKillsTilNextLevel.ToString();
+            baseKillsTilNextLevelLabel.Text = experienceData.baseKillsTilNextLevel.ToString("N0");
             experiencePercentFromLastKillLabel.Text = ((experienceData.lastKillExperience / (float)experienceData.requiredBaseExperience) * 100).ToString();
+            //baseExperiencePerHourLabel.Text = baseExperiencePerHour.ToString("N0");
         }
 
         private void ToggleBorderWithDoubleClick(object sender, EventArgs e)

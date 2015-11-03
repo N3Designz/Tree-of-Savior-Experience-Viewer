@@ -55,7 +55,7 @@
             // requiredBaseExperienceLabel
             // 
             this.requiredBaseExperienceLabel.AutoSize = true;
-            this.requiredBaseExperienceLabel.Location = new System.Drawing.Point(106, 13);
+            this.requiredBaseExperienceLabel.Location = new System.Drawing.Point(71, 13);
             this.requiredBaseExperienceLabel.Name = "requiredBaseExperienceLabel";
             this.requiredBaseExperienceLabel.Size = new System.Drawing.Size(0, 13);
             this.requiredBaseExperienceLabel.TabIndex = 1;
@@ -63,7 +63,7 @@
             // currentBaseExperiencePercentLabel
             // 
             this.currentBaseExperiencePercentLabel.AutoSize = true;
-            this.currentBaseExperiencePercentLabel.Location = new System.Drawing.Point(218, 13);
+            this.currentBaseExperiencePercentLabel.Location = new System.Drawing.Point(148, 13);
             this.currentBaseExperiencePercentLabel.Name = "currentBaseExperiencePercentLabel";
             this.currentBaseExperiencePercentLabel.Size = new System.Drawing.Size(0, 13);
             this.currentBaseExperiencePercentLabel.TabIndex = 2;
@@ -77,6 +77,7 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Controls.Add(this.currentBaseExperiencePercentLabel, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.requiredBaseExperienceLabel, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.currentBaseExperienceLabel, 0, 1);
@@ -94,14 +95,13 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(556, 56);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(626, 56);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
             // experienceFromLastKillLabel
             // 
             this.experienceFromLastKillLabel.AutoSize = true;
-            this.experienceFromLastKillLabel.Location = new System.Drawing.Point(276, 13);
+            this.experienceFromLastKillLabel.Location = new System.Drawing.Point(206, 13);
             this.experienceFromLastKillLabel.Name = "experienceFromLastKillLabel";
             this.experienceFromLastKillLabel.Size = new System.Drawing.Size(0, 13);
             this.experienceFromLastKillLabel.TabIndex = 3;
@@ -109,7 +109,7 @@
             // baseKillsTilNextLevelLabel
             // 
             this.baseKillsTilNextLevelLabel.AutoSize = true;
-            this.baseKillsTilNextLevelLabel.Location = new System.Drawing.Point(441, 13);
+            this.baseKillsTilNextLevelLabel.Location = new System.Drawing.Point(336, 13);
             this.baseKillsTilNextLevelLabel.Name = "baseKillsTilNextLevelLabel";
             this.baseKillsTilNextLevelLabel.Size = new System.Drawing.Size(0, 13);
             this.baseKillsTilNextLevelLabel.TabIndex = 4;
@@ -119,23 +119,23 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(3, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(97, 13);
+            this.label6.Size = new System.Drawing.Size(62, 13);
             this.label6.TabIndex = 5;
-            this.label6.Text = "Current Experience";
+            this.label6.Text = "Current Exp";
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(106, 0);
+            this.label7.Location = new System.Drawing.Point(71, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(106, 13);
+            this.label7.Size = new System.Drawing.Size(71, 13);
             this.label7.TabIndex = 6;
-            this.label7.Text = "Required Experience";
+            this.label7.Text = "Required Exp";
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(218, 0);
+            this.label8.Location = new System.Drawing.Point(148, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(52, 13);
             this.label8.TabIndex = 7;
@@ -144,25 +144,25 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(276, 0);
+            this.label9.Location = new System.Drawing.Point(206, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(99, 13);
+            this.label9.Size = new System.Drawing.Size(64, 13);
             this.label9.TabIndex = 8;
-            this.label9.Text = "Last Kill Experience";
+            this.label9.Text = "Last Kill Exp";
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(441, 0);
+            this.label10.Location = new System.Drawing.Point(336, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(93, 13);
+            this.label10.Size = new System.Drawing.Size(49, 13);
             this.label10.TabIndex = 9;
-            this.label10.Text = "Kills Til Next Level";
+            this.label10.Text = "Kills TNL";
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(381, 0);
+            this.label11.Location = new System.Drawing.Point(276, 0);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(54, 13);
             this.label11.TabIndex = 10;
@@ -171,7 +171,7 @@
             // experiencePercentFromLastKillLabel
             // 
             this.experiencePercentFromLastKillLabel.AutoSize = true;
-            this.experiencePercentFromLastKillLabel.Location = new System.Drawing.Point(381, 13);
+            this.experiencePercentFromLastKillLabel.Location = new System.Drawing.Point(276, 13);
             this.experiencePercentFromLastKillLabel.Name = "experiencePercentFromLastKillLabel";
             this.experiencePercentFromLastKillLabel.Size = new System.Drawing.Size(0, 13);
             this.experiencePercentFromLastKillLabel.TabIndex = 11;
@@ -180,7 +180,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(579, 53);
+            this.ClientSize = new System.Drawing.Size(426, 50);
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "ExperienceViewerForm";
