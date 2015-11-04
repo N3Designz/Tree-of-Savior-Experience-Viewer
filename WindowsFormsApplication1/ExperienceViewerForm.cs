@@ -140,7 +140,7 @@ namespace TreeOfSaviorExperienceViewer
             var offsetList = new int[] { 0x10C };
             var buffer = new byte[4];
             var lpOutStorage = 0;
-            IntPtr currentAddress = new IntPtr(0x01487F30);
+            IntPtr currentAddress = new IntPtr(0x01489F10);
 
             ReadProcessMemory(process.Handle, currentAddress, buffer, buffer.Length, out lpOutStorage);
 
@@ -174,7 +174,7 @@ namespace TreeOfSaviorExperienceViewer
             requiredBaseExperienceLabel.Text = experienceData.requiredBaseExperience.ToString("N0");
             currentBaseExperiencePercentLabel.Text = basePercent.ToString() + "%";
             experienceFromLastKillLabel.Text = experienceData.lastKillExperience.ToString("N0");
-            baseKillsTilNextLevelLabel.Text = experienceData.baseKillsTilNextLevel.ToString("N0");
+            baseKillsTilNextLevelLabel.Text = experienceData.baseKillsTilNextLevel.ToString();
             experiencePercentFromLastKillLabel.Text = ((experienceData.lastKillExperience / (float)experienceData.requiredBaseExperience) * 100).ToString();
             //baseExperiencePerHourLabel.Text = baseExperiencePerHour.ToString("N0");
         }
