@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Threading;
 
 namespace TreeOfSaviorExperienceViewer
 {
@@ -110,7 +111,6 @@ namespace TreeOfSaviorExperienceViewer
                 {
                     experienceData.lastKillExperience = experienceData.currentBaseExperience - experienceData.previousBaseExperience;
                     baseExperienceGained += experienceData.lastKillExperience;
-                    Console.WriteLine("not equal: " + baseExperienceGained);
                     
                     experienceData.baseKillsTilNextLevel = (experienceData.requiredBaseExperience - experienceData.currentBaseExperience) / (float)experienceData.lastKillExperience;
 
@@ -128,6 +128,8 @@ namespace TreeOfSaviorExperienceViewer
 
                 TimeSpan elapsedTime = DateTime.Now - Process.GetCurrentProcess().StartTime;
                 baseExperiencePerHour = baseExperienceGained * (3600000 / elapsedTime.TotalMilliseconds);
+
+                Thread.Sleep(30);
             }
         }
 
@@ -144,8 +146,6 @@ namespace TreeOfSaviorExperienceViewer
 
             Int32 value = BitConverter.ToInt32(buffer, 0);
 
-            Console.WriteLine("found: " + value);
-
             currentAddress = (IntPtr)value;
 
             for (int i = 0; i < offsetList.Length; i++)
@@ -154,9 +154,7 @@ namespace TreeOfSaviorExperienceViewer
                 ReadProcessMemory(process.Handle, currentAddress, buffer, buffer.Length, out lpOutStorage);
 
                 value = BitConverter.ToInt32(buffer, 0);
-
-                Console.WriteLine("found: " + value);
-
+                
                 if(i != offsetList.Length - 1)
                 {
                     currentAddress = (IntPtr)value;
