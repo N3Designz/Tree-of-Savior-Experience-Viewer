@@ -144,7 +144,7 @@ namespace TreeOfSaviorExperienceViewer
             }
             catch(Exception)
             {
-                DialogResult dialogResult = MessageBox.Show("Error on attaching to Tree of Savior client. Please open it first.", "Error");
+                DialogResult dialogResult = MessageBox.Show("Error on attaching to Tree of Savior client. Make sure that it is running.", "Error");
                 Environment.Exit(0);
             }
             

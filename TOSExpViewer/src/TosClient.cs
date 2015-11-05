@@ -52,18 +52,21 @@ namespace TOSExpViewer
             processId = OpenProcess(PROCESS_WM_READ, false, tosProcess.Id);
             //TODO: var errorCode = Marshal.GetLastWin32Error();
 
-            CURRENT_BASE_EXPERIENCE_ADDRESS = GetCurrentBaseExperience(tosProcess);
+            CURRENT_BASE_EXPERIENCE_ADDRESS = GetCurrentBaseExperiencePtr(tosProcess);
             REQURED_BASE_EXPERIENCE_ADDRESS = CURRENT_BASE_EXPERIENCE_ADDRESS + 0x4;
         }
 
-        private IntPtr GetCurrentBaseExperience(Process process)
+        private IntPtr GetCurrentBaseExperiencePtr(Process process)
         {
             var offsetList = new int[] { 0x10C };
             var buffer = new byte[4];
-            var lpOutStorage = 0;
+            var bytesRead = 0;
             IntPtr currentAddress = new IntPtr(0x01489F10);
 
-            ReadProcessMemory(process.Handle, currentAddress, buffer, buffer.Length, out lpOutStorage);
+            ReadProcessMemory(process.Handle, currentAddress, buffer, buffer.Length, out bytesRead);
+
+            if (bytesRead != 4)
+                throw new SystemException("failed_to_read_client_memory");
 
             Int32 value = BitConverter.ToInt32(buffer, 0);
 
@@ -72,7 +75,10 @@ namespace TOSExpViewer
             for (int i = 0; i < offsetList.Length; i++)
             {
                 currentAddress = IntPtr.Add(currentAddress, offsetList[i]);
-                ReadProcessMemory(process.Handle, currentAddress, buffer, buffer.Length, out lpOutStorage);
+                ReadProcessMemory(process.Handle, currentAddress, buffer, buffer.Length, out bytesRead);
+
+                if (bytesRead != 4)
+                    throw new SystemException("failed_to_read_client_memory");
 
                 value = BitConverter.ToInt32(buffer, 0);
 
