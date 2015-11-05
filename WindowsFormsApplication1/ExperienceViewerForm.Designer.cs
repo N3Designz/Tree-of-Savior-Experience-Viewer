@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExperienceViewerForm));
             this.currentBaseExperienceLabel = new System.Windows.Forms.Label();
             this.requiredBaseExperienceLabel = new System.Windows.Forms.Label();
             this.currentBaseExperiencePercentLabel = new System.Windows.Forms.Label();
@@ -41,6 +42,10 @@
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.experiencePercentFromLastKillLabel = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.baseExperiencePerHourLabel = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.hoursTilLevelLabel = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -70,14 +75,15 @@
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 6;
+            this.tableLayoutPanel1.ColumnCount = 8;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.Controls.Add(this.currentBaseExperiencePercentLabel, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.requiredBaseExperienceLabel, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.currentBaseExperienceLabel, 0, 1);
@@ -90,6 +96,10 @@
             this.tableLayoutPanel1.Controls.Add(this.label10, 5, 0);
             this.tableLayoutPanel1.Controls.Add(this.label11, 4, 0);
             this.tableLayoutPanel1.Controls.Add(this.experiencePercentFromLastKillLabel, 4, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label1, 6, 0);
+            this.tableLayoutPanel1.Controls.Add(this.baseExperiencePerHourLabel, 6, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label2, 7, 0);
+            this.tableLayoutPanel1.Controls.Add(this.hoursTilLevelLabel, 7, 1);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 12);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
@@ -176,13 +186,48 @@
             this.experiencePercentFromLastKillLabel.Size = new System.Drawing.Size(0, 13);
             this.experiencePercentFromLastKillLabel.TabIndex = 11;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(391, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(41, 13);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "Exp/Hr";
+            // 
+            // baseExperiencePerHourLabel
+            // 
+            this.baseExperiencePerHourLabel.AutoSize = true;
+            this.baseExperiencePerHourLabel.Location = new System.Drawing.Point(391, 13);
+            this.baseExperiencePerHourLabel.Name = "baseExperiencePerHourLabel";
+            this.baseExperiencePerHourLabel.Size = new System.Drawing.Size(0, 13);
+            this.baseExperiencePerHourLabel.TabIndex = 13;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(438, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(35, 13);
+            this.label2.TabIndex = 14;
+            this.label2.Text = "Hr/Lv";
+            // 
+            // hoursTilLevelLabel
+            // 
+            this.hoursTilLevelLabel.AutoSize = true;
+            this.hoursTilLevelLabel.Location = new System.Drawing.Point(438, 13);
+            this.hoursTilLevelLabel.Name = "hoursTilLevelLabel";
+            this.hoursTilLevelLabel.Size = new System.Drawing.Size(0, 13);
+            this.hoursTilLevelLabel.TabIndex = 15;
+            // 
             // ExperienceViewerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(426, 50);
+            this.ClientSize = new System.Drawing.Size(527, 50);
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ExperienceViewerForm";
             this.Text = "Tree of Savior Experience Viewer (by Excrulon)";
             this.TopMost = true;
@@ -208,6 +253,10 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label experiencePercentFromLastKillLabel;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label baseExperiencePerHourLabel;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label hoursTilLevelLabel;
     }
 }
 

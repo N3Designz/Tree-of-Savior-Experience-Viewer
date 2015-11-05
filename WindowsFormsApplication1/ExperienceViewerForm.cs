@@ -13,23 +13,18 @@ namespace TreeOfSaviorExperienceViewer
         private readonly BackgroundWorker backgroundWorker;
 
         private ExperienceData experienceData = new ExperienceData();
-
-        const int PROCESS_WM_READ = 0x0010;
-        const int PROCESS_ALL_ACCESS = 0x1F0FFF;
-        const int PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
-
+        
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr OpenProcess(UInt32 dwDesiredAccess, [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle, int dwProcessId);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [Out] byte[] lpBuffer, int dwSize, out int lpNumberOfBytesRead);
 
+        const int PROCESS_WM_READ = 0x0010;
+
         IntPtr CURRENT_BASE_EXPERIENCE_ADDRESS = IntPtr.Zero;
         IntPtr REQURED_BASE_EXPERIENCE_ADDRESS = IntPtr.Zero; //0x4;
         
-        // 0x10C offset
-        private int[] baseExperienceOffsets = new int[] { 0x450, 0x340, 0x190, 0x50, 0x10C };
-
         public ExperienceViewerForm()
         {
             InitializeComponent();
@@ -66,6 +61,14 @@ namespace TreeOfSaviorExperienceViewer
             backgroundWorker.RunWorkerAsync();
 
             currentBaseExperienceLabel.Text = experienceData.currentBaseExperience.ToString();
+
+            experienceData.currentBaseExperience = 0;
+            experienceData.currentBaseExperience = 0;
+            experienceData.lastKillExperience = 0;
+            experienceData.previousCurrentBaseExperience = 0;
+            experienceData.previousRequiredBaseExperience = 0;
+            experienceData.requiredBaseExperience = 0;
+            experienceData.baseKillsTilNextLevel = 0;
         }
 
         private void WireAllComponentsToClick(Control form1)
@@ -82,6 +85,7 @@ namespace TreeOfSaviorExperienceViewer
 
         private int baseExperienceGained = 0;
         private double baseExperiencePerHour = 0;
+        private double hoursTilLevel = 0;
         
         private void UpdateExperience(object sender, DoWorkEventArgs e)
         {
@@ -98,26 +102,32 @@ namespace TreeOfSaviorExperienceViewer
                 int bytesRead = 0;
                 var buffer = new byte[4];
 
+                experienceData.previousCurrentBaseExperience = experienceData.currentBaseExperience;
+                experienceData.previousRequiredBaseExperience = experienceData.requiredBaseExperience;
+
                 ReadProcessMemory(processId, (IntPtr)CURRENT_BASE_EXPERIENCE_ADDRESS, buffer, buffer.Length, out bytesRead);
-                Int32 currentBaseExperience = BitConverter.ToInt32(buffer, 0);
+                experienceData.currentBaseExperience = BitConverter.ToInt32(buffer, 0);
                                 
                 ReadProcessMemory(processId, (IntPtr)REQURED_BASE_EXPERIENCE_ADDRESS, buffer, buffer.Length, out bytesRead);
-                Int32 requiredBaseExperience = BitConverter.ToInt32(buffer, 0);
+                experienceData.requiredBaseExperience = BitConverter.ToInt32(buffer, 0);
                 
-                experienceData.currentBaseExperience = currentBaseExperience;
-                experienceData.requiredBaseExperience = requiredBaseExperience;
-                
-                if(experienceData.currentBaseExperience != experienceData.previousBaseExperience)
+                if(experienceData.currentBaseExperience != experienceData.previousCurrentBaseExperience)
                 {
-                    experienceData.lastKillExperience = experienceData.currentBaseExperience - experienceData.previousBaseExperience;
-                    baseExperienceGained += experienceData.lastKillExperience;
-                    
+                    if (experienceData.requiredBaseExperience > experienceData.previousRequiredBaseExperience)
+                    {
+                        experienceData.lastKillExperience = (experienceData.requiredBaseExperience - experienceData.previousCurrentBaseExperience) + experienceData.currentBaseExperience;
+                    }
+                    else
+                    {
+                        experienceData.lastKillExperience = experienceData.currentBaseExperience - experienceData.previousCurrentBaseExperience;
+                    }
+
                     experienceData.baseKillsTilNextLevel = (experienceData.requiredBaseExperience - experienceData.currentBaseExperience) / (float)experienceData.lastKillExperience;
 
-                    experienceData.previousBaseExperience = experienceData.currentBaseExperience;
+                    baseExperienceGained += experienceData.lastKillExperience;
 
                     backgroundWorker.ReportProgress(100, experienceData);
-
+                    
                     if(!started)
                     {
                         baseExperienceGained = 0;
@@ -129,10 +139,24 @@ namespace TreeOfSaviorExperienceViewer
                 TimeSpan elapsedTime = DateTime.Now - Process.GetCurrentProcess().StartTime;
                 baseExperiencePerHour = baseExperienceGained * (3600000 / elapsedTime.TotalMilliseconds);
 
-                Thread.Sleep(30);
+                hoursTilLevel = (experienceData.requiredBaseExperience - experienceData.currentBaseExperience) / baseExperiencePerHour;
+
+                if(hoursTilLevel <= 0)
+                {
+                    hoursTilLevel = 0;
+                }
+
+                if(baseExperiencePerHour <= 0)
+                {
+                    baseExperiencePerHour = 0;
+                }
+                
+                Thread.Sleep(1000);
+
+                backgroundWorker.ReportProgress(100, experienceData);
             }
         }
-
+        
         private bool started = false;
 
         private IntPtr getCurrentBaseExperience(Process process)
@@ -176,7 +200,8 @@ namespace TreeOfSaviorExperienceViewer
             experienceFromLastKillLabel.Text = experienceData.lastKillExperience.ToString("N0");
             baseKillsTilNextLevelLabel.Text = experienceData.baseKillsTilNextLevel.ToString();
             experiencePercentFromLastKillLabel.Text = ((experienceData.lastKillExperience / (float)experienceData.requiredBaseExperience) * 100).ToString();
-            //baseExperiencePerHourLabel.Text = baseExperiencePerHour.ToString("N0");
+            baseExperiencePerHourLabel.Text = baseExperiencePerHour.ToString("N0");
+            hoursTilLevelLabel.Text = hoursTilLevel.ToString("F4");
         }
 
         private void ToggleBorderWithDoubleClick(object sender, EventArgs e)
