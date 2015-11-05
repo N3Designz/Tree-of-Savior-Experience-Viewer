@@ -42,7 +42,8 @@ namespace TreeOfSaviorExperienceViewer
             {
                 DialogResult dialogResult = MessageBox.Show("Could not find Tree of Savior. Please open it first.", "Error");
 
-                if(DialogResult.OK == dialogResult)
+
+                if (DialogResult.OK == dialogResult)
                 {
                     Application.Exit();
                 }
