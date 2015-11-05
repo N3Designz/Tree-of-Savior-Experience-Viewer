@@ -1,67 +1,23 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Windows.Forms;
-using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Threading;
+using System.Windows.Forms;
+using TOSExpViewer;
 
 namespace TreeOfSaviorExperienceViewer
 {
     public partial class ExperienceViewerForm : Form
     {
+        private BackgroundWorker expUpdateBackgroundWorker;
 
-        private readonly BackgroundWorker backgroundWorker;
-
+        private TosClient client = null; 
         private ExperienceData experienceData = new ExperienceData();
-        
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern IntPtr OpenProcess(UInt32 dwDesiredAccess, [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle, int dwProcessId);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [Out] byte[] lpBuffer, int dwSize, out int lpNumberOfBytesRead);
-
-        const int PROCESS_WM_READ = 0x0010;
-
-        IntPtr CURRENT_BASE_EXPERIENCE_ADDRESS = IntPtr.Zero;
-        IntPtr REQURED_BASE_EXPERIENCE_ADDRESS = IntPtr.Zero; //0x4;
         
         public ExperienceViewerForm()
         {
             InitializeComponent();
             WireAllComponentsToClick(this);
-
-            Process[] processes = Process.GetProcessesByName("Client_tos");
-            Process process = null;
-
-            if(processes.Length > 0)
-            {
-                process = processes[0];
-            }
-
-            if(processes.Length == 0 || process == null)
-            {
-                DialogResult dialogResult = MessageBox.Show("Could not find Tree of Savior. Please open it first.", "Error");
-
-
-                if (DialogResult.OK == dialogResult)
-                {
-                    Application.Exit();
-                }
-            }
-
-            var processId = OpenProcess(PROCESS_WM_READ, false, process.Id);
-
-            CURRENT_BASE_EXPERIENCE_ADDRESS = getCurrentBaseExperience(process);
-            REQURED_BASE_EXPERIENCE_ADDRESS = CURRENT_BASE_EXPERIENCE_ADDRESS + 0x4;
-
-            backgroundWorker = new BackgroundWorker();
-            backgroundWorker.WorkerSupportsCancellation = true;
-            backgroundWorker.DoWork += UpdateExperience;
-            backgroundWorker.ProgressChanged += new ProgressChangedEventHandler(UpdateUI);
-            backgroundWorker.WorkerReportsProgress = true;
-            backgroundWorker.RunWorkerAsync();
-
-            currentBaseExperienceLabel.Text = experienceData.currentBaseExperience.ToString();
 
             experienceData.currentBaseExperience = 0;
             experienceData.currentBaseExperience = 0;
@@ -72,14 +28,14 @@ namespace TreeOfSaviorExperienceViewer
             experienceData.baseKillsTilNextLevel = 0;
         }
 
-        private void WireAllComponentsToClick(Control form1)
+        private void WireAllComponentsToClick(Control control)
         {
-            foreach(Control control in form1.Controls)
+            foreach(Control subControl in control.Controls)
             {
-                control.DoubleClick += this.ToggleBorderWithDoubleClick;
-                if(control.HasChildren)
+                subControl.DoubleClick += this.ToggleBorderWithDoubleClick;
+                if(subControl.HasChildren)
                 {
-                    WireAllComponentsToClick(control);
+                    WireAllComponentsToClick(subControl);
                 }
             }
         }
@@ -90,27 +46,18 @@ namespace TreeOfSaviorExperienceViewer
         
         private void UpdateExperience(object sender, DoWorkEventArgs e)
         {
-            Process process = Process.GetProcessesByName("Client_tos")[0];
-            var processId = OpenProcess(PROCESS_WM_READ, false, process.Id);
-            
-            if (backgroundWorker.CancellationPending)
+            if (expUpdateBackgroundWorker.CancellationPending)
             {
                 e.Cancel = true;
             }
 
-            while (!backgroundWorker.CancellationPending)
+            while (!expUpdateBackgroundWorker.CancellationPending)
             {
-                int bytesRead = 0;
-                var buffer = new byte[4];
-
                 experienceData.previousCurrentBaseExperience = experienceData.currentBaseExperience;
                 experienceData.previousRequiredBaseExperience = experienceData.requiredBaseExperience;
 
-                ReadProcessMemory(processId, (IntPtr)CURRENT_BASE_EXPERIENCE_ADDRESS, buffer, buffer.Length, out bytesRead);
-                experienceData.currentBaseExperience = BitConverter.ToInt32(buffer, 0);
-                                
-                ReadProcessMemory(processId, (IntPtr)REQURED_BASE_EXPERIENCE_ADDRESS, buffer, buffer.Length, out bytesRead);
-                experienceData.requiredBaseExperience = BitConverter.ToInt32(buffer, 0);
+                experienceData.currentBaseExperience = client.GetBaseExperience();
+                experienceData.requiredBaseExperience = client.GetRequiredExperience();
                 
                 if(experienceData.currentBaseExperience != experienceData.previousCurrentBaseExperience)
                 {
@@ -127,7 +74,7 @@ namespace TreeOfSaviorExperienceViewer
 
                     baseExperienceGained += experienceData.lastKillExperience;
 
-                    backgroundWorker.ReportProgress(100, experienceData);
+                    expUpdateBackgroundWorker.ReportProgress(100, experienceData);
                     
                     if(!started)
                     {
@@ -154,41 +101,12 @@ namespace TreeOfSaviorExperienceViewer
                 
                 Thread.Sleep(1000);
 
-                backgroundWorker.ReportProgress(100, experienceData);
+                expUpdateBackgroundWorker.ReportProgress(100, experienceData);
             }
         }
         
         private bool started = false;
 
-        private IntPtr getCurrentBaseExperience(Process process)
-        {
-            var offsetList = new int[] { 0x10C };
-            var buffer = new byte[4];
-            var lpOutStorage = 0;
-            IntPtr currentAddress = new IntPtr(0x01489F10);
-
-            ReadProcessMemory(process.Handle, currentAddress, buffer, buffer.Length, out lpOutStorage);
-
-            Int32 value = BitConverter.ToInt32(buffer, 0);
-
-            currentAddress = (IntPtr)value;
-
-            for (int i = 0; i < offsetList.Length; i++)
-            {
-                currentAddress = IntPtr.Add(currentAddress, offsetList[i]);
-                ReadProcessMemory(process.Handle, currentAddress, buffer, buffer.Length, out lpOutStorage);
-
-                value = BitConverter.ToInt32(buffer, 0);
-                
-                if(i != offsetList.Length - 1)
-                {
-                    currentAddress = (IntPtr)value;
-                }
-            }
-            
-            return currentAddress;
-        }
-        
         private void UpdateUI(object sender, ProgressChangedEventArgs e)
         {
             ExperienceData experienceData = (ExperienceData)e.UserState;
@@ -214,6 +132,36 @@ namespace TreeOfSaviorExperienceViewer
             {
                 this.FormBorderStyle = FormBorderStyle.FixedSingle;
             }
+        }
+
+        private void ExperienceViewerForm_Load(object sender, EventArgs e)
+        {
+            client = new TosClient();
+
+            try
+            {
+                client.Attach();
+            }
+            catch(Exception)
+            {
+                DialogResult dialogResult = MessageBox.Show("Error on attaching to Tree of Savior client. Please open it first.", "Error");
+                Environment.Exit(0);
+            }
+            
+            expUpdateBackgroundWorker = new BackgroundWorker();
+            expUpdateBackgroundWorker.WorkerSupportsCancellation = true;
+            expUpdateBackgroundWorker.DoWork += UpdateExperience;
+            expUpdateBackgroundWorker.ProgressChanged += new ProgressChangedEventHandler(UpdateUI);
+            expUpdateBackgroundWorker.WorkerReportsProgress = true;
+            expUpdateBackgroundWorker.RunWorkerAsync();
+
+            client.ClientExitEvent += (obj, args) => 
+            {
+                expUpdateBackgroundWorker.CancelAsync();
+                Application.Exit();
+            };
+
+            currentBaseExperienceLabel.Text = experienceData.currentBaseExperience.ToString();
         }
     }
 }

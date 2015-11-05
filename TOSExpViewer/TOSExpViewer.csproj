@@ -87,16 +87,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\ExperienceData.cs" />
-    <Compile Include="src\forms\ExperienceViewerForm.cs">
+    <Compile Include="src\forms\frmExperienceViewer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\forms\ExperienceViewerForm.Designer.cs">
-      <DependentUpon>ExperienceViewerForm.cs</DependentUpon>
+    <Compile Include="src\forms\frmExperienceViewer.Designer.cs">
+      <DependentUpon>frmExperienceViewer.cs</DependentUpon>
     </Compile>
     <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="src\forms\ExperienceViewerForm.resx">
-      <DependentUpon>ExperienceViewerForm.cs</DependentUpon>
+    <Compile Include="src\TosClient.cs" />
+    <EmbeddedResource Include="src\forms\frmExperienceViewer.resx">
+      <DependentUpon>frmExperienceViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
