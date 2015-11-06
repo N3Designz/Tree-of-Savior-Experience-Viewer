@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 14 for Windows Desktop
+# Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tree of Savior Experience Viewer", "WindowsFormsApplication1\Tree of Savior Experience Viewer.csproj", "{FC49A6CF-B9FF-4F2F-8D91-9C402BA10F57}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TOSExpViewer", "TOSExpViewer\TOSExpViewer.csproj", "{FC49A6CF-B9FF-4F2F-8D91-9C402BA10F57}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

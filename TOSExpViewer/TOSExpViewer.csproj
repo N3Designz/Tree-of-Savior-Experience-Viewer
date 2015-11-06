@@ -7,8 +7,8 @@
     <ProjectGuid>{FC49A6CF-B9FF-4F2F-8D91-9C402BA10F57}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WindowsFormsApplication1</RootNamespace>
-    <AssemblyName>Tree of Savior Experience Viewer</AssemblyName>
+    <RootNamespace>TOSExpViewer</RootNamespace>
+    <AssemblyName>TOSExpViewer</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -58,7 +58,7 @@
     <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
@@ -67,10 +67,14 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>TreeOfSaviorExperienceViewer.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -82,17 +86,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExperienceData.cs" />
-    <Compile Include="ExperienceViewerForm.cs">
+    <Compile Include="src\ExperienceData.cs" />
+    <Compile Include="src\forms\frmExperienceViewer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ExperienceViewerForm.Designer.cs">
-      <DependentUpon>ExperienceViewerForm.cs</DependentUpon>
+    <Compile Include="src\forms\frmExperienceViewer.Designer.cs">
+      <DependentUpon>frmExperienceViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="ExperienceViewerForm.resx">
-      <DependentUpon>ExperienceViewerForm.cs</DependentUpon>
+    <Compile Include="src\TosClient.cs" />
+    <EmbeddedResource Include="src\forms\frmExperienceViewer.resx">
+      <DependentUpon>frmExperienceViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -102,6 +107,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -113,7 +119,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="WindowsFormsApplication1_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
