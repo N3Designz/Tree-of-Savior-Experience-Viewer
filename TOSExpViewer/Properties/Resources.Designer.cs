@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TOSExpViewer.Properties {
+namespace TreeOfSaviorExperienceViewer.Properties {
     using System;
     
     

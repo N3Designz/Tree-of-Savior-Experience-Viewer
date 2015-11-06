@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
-using TOSExpViewer;
+using TreeOfSaviorExperienceViewer;
 
 namespace TreeOfSaviorExperienceViewer
 {
