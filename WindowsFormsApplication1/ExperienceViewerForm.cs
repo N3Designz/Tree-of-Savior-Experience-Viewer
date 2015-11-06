@@ -42,10 +42,7 @@ namespace TreeOfSaviorExperienceViewer
             {
                 DialogResult dialogResult = MessageBox.Show("Could not find Tree of Savior. Please open it first.", "Error");
 
-                if(DialogResult.OK == dialogResult)
-                {
-                    Application.Exit();
-                }
+                Environment.Exit(0);
             }
 
             var processId = OpenProcess(PROCESS_WM_READ, false, process.Id);
