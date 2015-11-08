@@ -10,7 +10,10 @@ namespace TOSExpViewer.Core
 
         public WindowSettingsBuilder WithTopLeft(double top = 0, double left = 0)
         {
-            if (top == 0 && left == 0) return this;
+            if (top == 0 && left == 0)
+            {
+                return this;
+            }
 
             WithStartupLocation(WindowStartupLocation.Manual);
             settings.Left = left;
@@ -41,7 +44,9 @@ namespace TOSExpViewer.Core
         public WindowSettingsBuilder WithWindowStyle(WindowStyle windowStyle)
         {
             if (windowStyle != WindowStyle.None)
+            {
                 settings.AllowsTransparency = false; // transparency + windows style other than none will trigger an exception
+            }
 
             settings.WindowStyle = windowStyle;
             return this;

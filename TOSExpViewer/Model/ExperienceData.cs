@@ -15,7 +15,11 @@ namespace TOSExpViewer.Model
             get { return currentBaseExperience; }
             set
             {
-                if (value == currentBaseExperience) return;
+                if (value == currentBaseExperience)
+                {
+                    return;
+                }
+
                 currentBaseExperience = value;
                 NotifyOfPropertyChange(() => CurrentBaseExperience);
                 NotifyOfPropertyChange(() => CurrentBaseExperiencePercent);
@@ -30,7 +34,11 @@ namespace TOSExpViewer.Model
             get { return requiredBaseExperience; }
             set
             {
-                if (value == requiredBaseExperience) return;
+                if (value == requiredBaseExperience)
+                {
+                    return;
+                }
+
                 requiredBaseExperience = value;
                 NotifyOfPropertyChange(() => RequiredBaseExperience);
                 NotifyOfPropertyChange(() => CurrentBaseExperiencePercent);
@@ -46,7 +54,11 @@ namespace TOSExpViewer.Model
             get { return lastExperienceGain; }
             set
             {
-                if (value == lastExperienceGain) return;
+                if (value == lastExperienceGain)
+                {
+                    return;
+                }
+
                 lastExperienceGain = value;
                 NotifyOfPropertyChange(() => LastExperienceGain);
                 NotifyOfPropertyChange(() => KillsTilNextLevel);
@@ -58,7 +70,11 @@ namespace TOSExpViewer.Model
             get { return previousRequiredBaseExperience; }
             set
             {
-                if (value == previousRequiredBaseExperience) return;
+                if (value == previousRequiredBaseExperience)
+                {
+                    return;
+                }
+
                 previousRequiredBaseExperience = value;
                 NotifyOfPropertyChange(() => PreviousRequiredBaseExperience);
             }

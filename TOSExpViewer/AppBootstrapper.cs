@@ -29,7 +29,9 @@ namespace TOSExpViewer
         {
             var instance = container.GetInstance(service, key);
             if (instance != null)
+            {
                 return instance;
+            }
 
             throw new InvalidOperationException("Could not locate any instances.");
         }
@@ -46,8 +48,12 @@ namespace TOSExpViewer
 
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
-            var settings = new WindowSettingsBuilder().WithTopLeft(Settings.Default.Top, Settings.Default.Left)
-                                                      .AsTopmost().SizeToContent().Create();
+            var settings = new WindowSettingsBuilder()
+                .WithTopLeft(Settings.Default.Top, Settings.Default.Left)
+                .AsTopmost()
+                .SizeToContent()
+                .Create();
+
             DisplayRootViewFor<ShellViewModel>(settings);
         }
     }

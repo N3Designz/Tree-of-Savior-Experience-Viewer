@@ -5,7 +5,6 @@ using Caliburn.Micro;
 
 namespace TOSExpViewer.Model
 {
-    /// <summary> Original code created by Excrulon @ https://bitbucket.org/Excrulon/tree-of-savior-experience-viewer/src. Minor modifications only. </summary>
     public class TosMonitor : PropertyChangedBase
     {
         private static readonly object syncLock = new object();
@@ -30,7 +29,11 @@ namespace TOSExpViewer.Model
 
         public TosMonitor(int currentBaseExpAddress)
         {
-            if (currentBaseExpAddress <= 0) throw new ArgumentOutOfRangeException(nameof(currentBaseExpAddress));
+            if (currentBaseExpAddress <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(currentBaseExpAddress));
+            }
+
             this.currentBaseExpAddress = currentBaseExpAddress;
         }
 
@@ -39,7 +42,10 @@ namespace TOSExpViewer.Model
             get { return attached; }
             set
             {
-                if (value == attached) return;
+                if (value == attached)
+                {
+                    return;
+                }
                 attached = value;
                 NotifyOfPropertyChange(() => Attached);
             }
@@ -74,7 +80,6 @@ namespace TOSExpViewer.Model
                 try
                 {
                     processId = OpenProcess(processWmRead, false, tosProcess.Id);
-                    //TODO: var errorCode = Marshal.GetLastWin32Error();
 
                     currentBaseExperienceAddress = GetCurrentBaseExperiencePtr(tosProcess);
                     requredBaseExperienceAddress = currentBaseExperienceAddress + 0x4;
@@ -89,27 +94,42 @@ namespace TOSExpViewer.Model
 
         public int GetBaseExperience()
         {
-            if (!Attached) return Int32.MinValue;
+            if (!Attached)
+            {
+                return Int32.MinValue;
+            }
 
             ReadProcessMemory(processId, currentBaseExperienceAddress, buffer, buffer.Length, out bytesRead);
             if (bytesRead != 4)
+            {
                 return Int32.MinValue;
+            }
+
             return BitConverter.ToInt32(buffer, 0);
         }
 
         public int GetRequiredExperience()
         {
-            if (!Attached) return Int32.MinValue;
+            if (!Attached)
+            {
+                return Int32.MinValue;
+            }
 
             ReadProcessMemory(processId, requredBaseExperienceAddress, buffer, buffer.Length, out bytesRead);
             if (bytesRead != 4)
+            {
                 return Int32.MinValue;
+            }
+
             return BitConverter.ToInt32(buffer, 0);
         }
 
         private IntPtr GetCurrentBaseExperiencePtr(Process process)
         {
-            if (!Attached) return IntPtr.Zero;
+            if (!Attached)
+            {
+                return IntPtr.Zero;
+            }
 
             var offsetList = new int[] { 0x10C };
             var buffer = new byte[4];

@@ -43,7 +43,11 @@ namespace TOSExpViewer
             get { return attached; }
             set
             {
-                if (value == attached) return;
+                if (value == attached)
+                {
+                    return;
+                }
+
                 attached = value;
                 NotifyOfPropertyChange(() => Attached);
             }
@@ -53,7 +57,10 @@ namespace TOSExpViewer
         {
             get
             {
-                if (ExperienceData.LastExperienceGain == 0) return INFINITY;
+                if (ExperienceData.LastExperienceGain == 0)
+                {
+                    return INFINITY;
+                }
 
                 TimeSpan elapsedTime = DateTime.Now - Process.GetCurrentProcess().StartTime;
                 var totalExpRequired = ExperienceData.RequiredBaseExperience - ExperienceData.CurrentBaseExperience;
@@ -61,11 +68,19 @@ namespace TOSExpViewer
                 var estimatedTimeToLevel = TimeSpan.FromSeconds(totalExpRequired / expPerSecond);
 
                 if (estimatedTimeToLevel >= TimeSpan.FromDays(1) || estimatedTimeToLevel < TimeSpan.Zero)
+                {
                     return INFINITY;
+                }
+
                 if (estimatedTimeToLevel >= TimeSpan.FromHours(1))
+                {
                     return $"{estimatedTimeToLevel.Hours:00}h {estimatedTimeToLevel.Minutes:00}m";
+                }
+
                 if (estimatedTimeToLevel >= TimeSpan.FromMinutes(1))
+                {
                     return $"~{estimatedTimeToLevel.Minutes}m";
+                }
 
                 return $"~{estimatedTimeToLevel.Seconds}s";
             }
@@ -90,6 +105,7 @@ namespace TOSExpViewer
         public void InterceptWindowDoubleClick(MouseButtonEventArgs args)
         {
             var window = GetView() as MetroWindow;
+
             if (window != null)
             {
                 window.ShowTitleBar = !window.ShowTitleBar;
@@ -104,7 +120,11 @@ namespace TOSExpViewer
         public void WindowMoved()
         {
             var window = GetView() as MetroWindow;
-            if (window == null) return;
+
+            if (window == null)
+            {
+                return;
+            }
 
             Settings.Default.Top = window.Top;
             Settings.Default.Left = window.Left;
@@ -125,7 +145,10 @@ namespace TOSExpViewer
 
         private void TimerOnTick(object sender, EventArgs eventArgs)
         {
-            if (!IsActive || tosMonitor == null) return;
+            if (!IsActive || tosMonitor == null)
+            {
+                return;
+            }
 
             try
             {
@@ -137,7 +160,10 @@ namespace TOSExpViewer
                     tosMonitor.Attach();
                 }
 
-                if (!tosMonitor.Attached) return; // escape out, the client probably isn't running
+                if (!tosMonitor.Attached)
+                {
+                    return; // escape out, the client probably isn't running
+                }
                 
                 UpdateExperienceValues();
             }

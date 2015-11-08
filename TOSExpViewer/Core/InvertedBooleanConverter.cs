@@ -11,7 +11,9 @@ namespace TOSExpViewer.Core
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (targetType != typeof(Visibility))
+            {
                 throw new InvalidOperationException("The target must be a visibility");
+            }
             
             return (bool)value ? Visibility.Collapsed : Visibility.Visible;
         }
