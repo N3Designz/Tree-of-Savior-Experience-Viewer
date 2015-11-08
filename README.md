@@ -1,7 +1,8 @@
 # README #
 
 This is an experience viewer for Tree of Savior. You may need to update it occasionally if the memory addresses change due to a new patch or something.
-Optionally you can update the memory address yourself in the exe.config file if you know what to do :)
+
+Optionally, you can update the memory address yourself in the exe.config file if you know what to do. :)
 
 ### Dependencies ###
 
