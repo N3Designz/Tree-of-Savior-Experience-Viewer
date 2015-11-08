@@ -65,6 +65,12 @@ namespace TOSExpViewer
                 TimeSpan elapsedTime = DateTime.Now - Process.GetCurrentProcess().StartTime;
                 var totalExpRequired = ExperienceData.RequiredBaseExperience - ExperienceData.CurrentBaseExperience;
                 var expPerSecond = baseExpGained / elapsedTime.TotalSeconds;
+
+                if(expPerSecond == 0)
+                {
+                    return INFINITY;
+                }
+                
                 var estimatedTimeToLevel = TimeSpan.FromSeconds(totalExpRequired / expPerSecond);
 
                 if (estimatedTimeToLevel >= TimeSpan.FromDays(1) || estimatedTimeToLevel < TimeSpan.Zero)
