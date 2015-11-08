@@ -34,7 +34,7 @@ namespace TOSExpViewer
             timer.Tick += TimerOnTick;
         }
 
-        public override string DisplayName { get; set; } = "TOS EXP TRACKER";
+        public override string DisplayName { get; set; } = "TREE OF SAVIOR EXPERIENCE VIEWER";
 
         public ExperienceData ExperienceData { get; } = new ExperienceData();
 
