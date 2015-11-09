@@ -179,10 +179,10 @@ namespace TOSExpViewer
 
         private void UpdateExperienceValues()
         {
-            var newBaseExp = tosMonitor.GetBaseExperience();
+            var newCurrentBaseExperience = tosMonitor.GetCurrentBaseExperience();
             var requiredBasedExp = tosMonitor.GetRequiredExperience();
 
-            if (newBaseExp == int.MinValue || requiredBasedExp == int.MinValue ||
+            if (newCurrentBaseExperience == int.MinValue || requiredBasedExp == int.MinValue ||
                 requiredBasedExp == 15) // for some reason required base exp returns as 15 when char not selected, no idea why
             {
                 Reset();
@@ -195,22 +195,22 @@ namespace TOSExpViewer
             if (firstUpdate)
             {
                 ExperienceData.PreviousRequiredBaseExperience = requiredBasedExp;
-                ExperienceData.CurrentBaseExperience = newBaseExp;
+                ExperienceData.CurrentBaseExperience = newCurrentBaseExperience;
                 firstUpdate = false;
             }
-            else if (newBaseExp != ExperienceData.CurrentBaseExperience) // exp hasn't changed, nothing else to do
+            else if (newCurrentBaseExperience != ExperienceData.CurrentBaseExperience) // exp hasn't changed, nothing else to do
             {
                 if (ExperienceData.RequiredBaseExperience > ExperienceData.PreviousRequiredBaseExperience) // handle level up scenarios
                 {
-                    ExperienceData.LastExperienceGain = (ExperienceData.PreviousRequiredBaseExperience - ExperienceData.CurrentBaseExperience) + newBaseExp;
+                    ExperienceData.LastExperienceGain = (ExperienceData.PreviousRequiredBaseExperience - ExperienceData.CurrentBaseExperience) + newCurrentBaseExperience;
                     ExperienceData.PreviousRequiredBaseExperience = requiredBasedExp;
                 }
                 else
                 {
-                    ExperienceData.LastExperienceGain = newBaseExp - ExperienceData.CurrentBaseExperience;
+                    ExperienceData.LastExperienceGain = newCurrentBaseExperience - ExperienceData.CurrentBaseExperience;
                 }
 
-                ExperienceData.CurrentBaseExperience = newBaseExp;
+                ExperienceData.CurrentBaseExperience = newCurrentBaseExperience;
                 ExperienceData.GainedBaseExperience += ExperienceData.LastExperienceGain;
             }
 

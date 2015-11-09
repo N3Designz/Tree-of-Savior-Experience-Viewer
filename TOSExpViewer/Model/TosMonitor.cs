@@ -92,7 +92,7 @@ namespace TOSExpViewer.Model
             }
         }
 
-        public int GetBaseExperience()
+        public int GetCurrentBaseExperience()
         {
             if (!Attached)
             {
