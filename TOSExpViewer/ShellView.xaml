@@ -44,22 +44,22 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Current Exp" Style="{StaticResource DataTextBlockStyle}" />
-            <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding ExperienceData.CurrentBaseExperience}" Style="{StaticResource DataTextBlockStyle}" />
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding ExperienceData.CurrentBaseExperience, StringFormat={}{0:n0}}" Style="{StaticResource DataTextBlockStyle}" />
 
             <TextBlock Grid.Row="0" Grid.Column="1" Text="Required Exp" Style="{StaticResource DataTextBlockStyle}" />
-            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding ExperienceData.RequiredBaseExperience}" Style="{StaticResource DataTextBlockStyle}" />
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding ExperienceData.RequiredBaseExperience, StringFormat={}{0:n0}}" Style="{StaticResource DataTextBlockStyle}" />
 
             <TextBlock Grid.Row="0" Grid.Column="2" Text="Current %" Style="{StaticResource DataTextBlockStyle}" ToolTip="Current experience as a percentage" />
             <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding ExperienceData.CurrentBaseExperiencePercent, StringFormat={}{0:N4}}" Style="{StaticResource DataTextBlockStyle}" />
 
             <TextBlock Grid.Row="0" Grid.Column="3" Text="Last Exp Gain" Style="{StaticResource DataTextBlockStyle}" ToolTip="Amount of experience gained from last event" />
-            <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding ExperienceData.LastExperienceGain}" Style="{StaticResource DataTextBlockStyle}" />
+            <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding ExperienceData.LastExperienceGain, StringFormat={}{0:n0}}" Style="{StaticResource DataTextBlockStyle}" />
 
             <TextBlock Grid.Row="0" Grid.Column="4" Text="Kills TNL" Style="{StaticResource DataTextBlockStyle}" ToolTip="Kills to next level" />
-            <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding ExperienceData.KillsTilNextLevel}" Style="{StaticResource DataTextBlockStyle}" />
+            <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding ExperienceData.KillsTilNextLevel, StringFormat={}{0:n0}}" Style="{StaticResource DataTextBlockStyle}" />
 
             <TextBlock Grid.Row="0" Grid.Column="5" Text="Exp/hr" Style="{StaticResource DataTextBlockStyle}" ToolTip="Experience points per hour" />
-            <TextBlock Grid.Row="1" Grid.Column="5" Text="{Binding ExpPerHour, StringFormat={}{0:F0}}" Style="{StaticResource DataTextBlockStyle}" />
+            <TextBlock Grid.Row="1" Grid.Column="5" Text="{Binding ExpPerHour, StringFormat={}{0:n0}}" Style="{StaticResource DataTextBlockStyle}" />
 
             <TextBlock Grid.Row="0" Grid.Column="6" Text="Time TNL" Style="{StaticResource DataTextBlockStyle}" ToolTip="Time to next level" />
             <TextBlock Grid.Row="1" Grid.Column="6" Text="{Binding TimeToLevel, StringFormat={}{0:F2}}" Style="{StaticResource DataTextBlockStyle}" />

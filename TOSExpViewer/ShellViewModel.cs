@@ -94,6 +94,7 @@ namespace TOSExpViewer
         {
             get
             {
+                Console.WriteLine(ExperienceData.GainedBaseExperience + " " + TimeSpan.FromHours(1).TotalMilliseconds + " " + ExperienceData.ElapsedTime.TotalMilliseconds);
                 return ExperienceData.GainedBaseExperience * (TimeSpan.FromHours(1).TotalMilliseconds / ExperienceData.ElapsedTime.TotalMilliseconds);
             }
         }
