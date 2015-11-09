@@ -19,7 +19,6 @@ namespace TOSExpViewer
 
         private readonly DispatcherTimer timer = new DispatcherTimer();
         private TosMonitor tosMonitor;
-        private int baseExpGained;
         private bool firstUpdate = true;
         private bool attached;
 
@@ -61,17 +60,16 @@ namespace TOSExpViewer
                 {
                     return INFINITY;
                 }
+                
+                var totalExperienceRequired = ExperienceData.RequiredBaseExperience - ExperienceData.CurrentBaseExperience;
+                var experiencePerSecond = ExperienceData.GainedBaseExperience / ExperienceData.ElapsedTime.TotalSeconds;
 
-                TimeSpan elapsedTime = DateTime.Now - Process.GetCurrentProcess().StartTime;
-                var totalExpRequired = ExperienceData.RequiredBaseExperience - ExperienceData.CurrentBaseExperience;
-                var expPerSecond = baseExpGained / elapsedTime.TotalSeconds;
-
-                if(expPerSecond == 0)
+                if(experiencePerSecond == 0)
                 {
                     return INFINITY;
                 }
                 
-                var estimatedTimeToLevel = TimeSpan.FromSeconds(totalExpRequired / expPerSecond);
+                var estimatedTimeToLevel = TimeSpan.FromSeconds(totalExperienceRequired / experiencePerSecond);
 
                 if (estimatedTimeToLevel >= TimeSpan.FromDays(1) || estimatedTimeToLevel < TimeSpan.Zero)
                 {
@@ -96,15 +94,14 @@ namespace TOSExpViewer
         {
             get
             {
-                TimeSpan elapsedTime = DateTime.Now - Process.GetCurrentProcess().StartTime;
-                Console.WriteLine(baseExpGained + " " + TimeSpan.FromHours(1).TotalMilliseconds + " " + elapsedTime.TotalMilliseconds);
-                return baseExpGained * (TimeSpan.FromHours(1).TotalMilliseconds / elapsedTime.TotalMilliseconds);
+                return ExperienceData.GainedBaseExperience * (TimeSpan.FromHours(1).TotalMilliseconds / ExperienceData.ElapsedTime.TotalMilliseconds);
             }
         }
 
         public void Reset()
         {
-            baseExpGained = 0;
+            ExperienceData.GainedBaseExperience = 0;
+            ExperienceData.StartTime = DateTime.Now;
             NotifyOfPropertyChange(() => TimeToLevel);
             NotifyOfPropertyChange(() => ExpPerHour);
         }
@@ -214,7 +211,7 @@ namespace TOSExpViewer
                 }
 
                 ExperienceData.CurrentBaseExperience = newBaseExp;
-                baseExpGained += ExperienceData.LastExperienceGain;
+                ExperienceData.GainedBaseExperience += ExperienceData.LastExperienceGain;
             }
 
             NotifyOfPropertyChange(() => ExpPerHour);

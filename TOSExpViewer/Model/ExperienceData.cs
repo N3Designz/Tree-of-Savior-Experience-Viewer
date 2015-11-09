@@ -9,7 +9,9 @@ namespace TOSExpViewer.Model
         private int requiredBaseExperience;
         private int lastExperienceGain;
         private int previousRequiredBaseExperience;
-
+        private int gainedBaseExperience { get; set; }
+        private DateTime startTime;
+        
         public int CurrentBaseExperience
         {
             get { return currentBaseExperience; }
@@ -24,6 +26,20 @@ namespace TOSExpViewer.Model
                 NotifyOfPropertyChange(() => CurrentBaseExperience);
                 NotifyOfPropertyChange(() => CurrentBaseExperiencePercent);
                 NotifyOfPropertyChange(() => KillsTilNextLevel);
+            }
+        }
+
+        public int GainedBaseExperience
+        {
+            get { return gainedBaseExperience; }
+            set
+            {
+                if(value == gainedBaseExperience)
+                {
+                    return;
+                }
+
+                gainedBaseExperience = value;
             }
         }
 
@@ -80,12 +96,29 @@ namespace TOSExpViewer.Model
             }
         }
 
+        public DateTime StartTime
+        {
+            set
+            {
+                startTime = DateTime.Now;
+            }
+        }
+
+        public TimeSpan ElapsedTime
+        {
+            get
+            {
+                return DateTime.Now - startTime;
+            }
+        }
+
         public void Reset()
         {
             CurrentBaseExperience = 0;
             RequiredBaseExperience = 0;
             LastExperienceGain = 0;
             PreviousRequiredBaseExperience = 0;
+            startTime = DateTime.Now;
         }
     }
 }
