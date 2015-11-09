@@ -34,7 +34,7 @@ namespace TOSExpViewer
             timer.Tick += TimerOnTick;
         }
 
-        public override string DisplayName { get; set; } = "TREE OF SAVIOR EXPERIENCE VIEWER";
+        public override string DisplayName { get; set; } = "Tree of Savior Experience Viewer";
 
         public ExperienceData ExperienceData { get; } = new ExperienceData();
 
@@ -97,6 +97,7 @@ namespace TOSExpViewer
             get
             {
                 TimeSpan elapsedTime = DateTime.Now - Process.GetCurrentProcess().StartTime;
+                Console.WriteLine(baseExpGained + " " + TimeSpan.FromHours(1).TotalMilliseconds + " " + elapsedTime.TotalMilliseconds);
                 return baseExpGained * (TimeSpan.FromHours(1).TotalMilliseconds / elapsedTime.TotalMilliseconds);
             }
         }

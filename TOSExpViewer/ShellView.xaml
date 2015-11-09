@@ -14,7 +14,7 @@
     cal:Bind.AtDesignTime="True"
     SizeToContent="WidthAndHeight"
     MinHeight="55"
-    cal:Message.Attach="[LocationChanged] = [WindowMoved()];[MouseDoubleClick] = [InterceptWindowDoubleClick($eventArgs)]" Icon="tos-exp.ico" Title="TREE OF SAVIOR EXPERIENCE VIEWER">
+    cal:Message.Attach="[LocationChanged] = [WindowMoved()];[MouseDoubleClick] = [InterceptWindowDoubleClick($eventArgs)]" Icon="tos-exp.ico" Title="Tree of Savior Experience Viewer" TitleCaps="False">
     <!-- NOTE that the settings above for the window may be overridden during the app bootstrapper OnStartup() method -->
 
     <ContentControl>
