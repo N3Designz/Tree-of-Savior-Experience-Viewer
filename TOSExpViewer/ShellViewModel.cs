@@ -202,7 +202,7 @@ namespace TOSExpViewer
             {
                 if (ExperienceData.RequiredBaseExperience > ExperienceData.PreviousRequiredBaseExperience) // handle level up scenarios
                 {
-                    ExperienceData.LastExperienceGain = (ExperienceData.RequiredBaseExperience - ExperienceData.CurrentBaseExperience) + newBaseExp;
+                    ExperienceData.LastExperienceGain = (ExperienceData.PreviousRequiredBaseExperience - ExperienceData.CurrentBaseExperience) + newBaseExp;
                     ExperienceData.PreviousRequiredBaseExperience = requiredBasedExp;
                 }
                 else
