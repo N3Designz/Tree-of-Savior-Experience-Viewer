@@ -64,7 +64,7 @@ namespace TOSExpViewer
                 var totalExperienceRequired = ExperienceData.RequiredBaseExperience - ExperienceData.CurrentBaseExperience;
                 var experiencePerSecond = ExperienceData.GainedBaseExperience / ExperienceData.ElapsedTime.TotalSeconds;
 
-                if(experiencePerSecond == 0)
+                if(experiencePerSecond == 0 || double.IsNaN(experiencePerSecond))
                 {
                     return INFINITY;
                 }

@@ -9,7 +9,7 @@
     xmlns:core="clr-namespace:TOSExpViewer.Core"
     xmlns:tosExpViewer="clr-namespace:TOSExpViewer"
     mc:Ignorable="d"
-    ResizeMode="NoResize"
+    ResizeMode="CanMinimize"
     d:DataContext="{d:DesignInstance Type=tosExpViewer:ShellViewModel, IsDesignTimeCreatable=True}"
     cal:Bind.AtDesignTime="True"
     SizeToContent="WidthAndHeight"
