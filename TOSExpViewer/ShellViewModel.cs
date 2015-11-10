@@ -1,6 +1,5 @@
 using System;
 using System.Configuration;
-using System.Diagnostics;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -10,13 +9,13 @@ using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using TOSExpViewer.Model;
 using TOSExpViewer.Properties;
+using TOSExpViewer.Service;
+using TOSExpViewer.Core;
 
 namespace TOSExpViewer
 {
     public class ShellViewModel : Screen
     {
-        private const string INFINITY = "\u221E";
-
         private readonly DispatcherTimer timer = new DispatcherTimer();
         private TosMonitor tosMonitor;
         private bool firstUpdate = true;
@@ -37,6 +36,8 @@ namespace TOSExpViewer
 
         public ExperienceData ExperienceData { get; } = new ExperienceData();
 
+        private ExperienceDataToTextService experienceDataToTextService = new ExperienceDataToTextService();
+
         public bool Attached
         {
             get { return attached; }
@@ -51,59 +52,13 @@ namespace TOSExpViewer
                 NotifyOfPropertyChange(() => Attached);
             }
         }
-
-        public string TimeToLevel
-        {
-            get
-            {
-                if (ExperienceData.LastExperienceGain == 0)
-                {
-                    return INFINITY;
-                }
-                
-                var totalExperienceRequired = ExperienceData.RequiredBaseExperience - ExperienceData.CurrentBaseExperience;
-                var experiencePerSecond = ExperienceData.GainedBaseExperience / ExperienceData.ElapsedTime.TotalSeconds;
-
-                if(experiencePerSecond == 0 || double.IsNaN(experiencePerSecond))
-                {
-                    return INFINITY;
-                }
-                
-                var estimatedTimeToLevel = TimeSpan.FromSeconds(totalExperienceRequired / experiencePerSecond);
-
-                if (estimatedTimeToLevel >= TimeSpan.FromDays(1) || estimatedTimeToLevel < TimeSpan.Zero)
-                {
-                    return INFINITY;
-                }
-
-                if (estimatedTimeToLevel >= TimeSpan.FromHours(1))
-                {
-                    return $"{estimatedTimeToLevel.Hours:00}h {estimatedTimeToLevel.Minutes:00}m";
-                }
-
-                if (estimatedTimeToLevel >= TimeSpan.FromMinutes(1))
-                {
-                    return $"~{estimatedTimeToLevel.Minutes}m";
-                }
-
-                return $"~{estimatedTimeToLevel.Seconds}s";
-            }
-        }
-
-        public double ExpPerHour
-        {
-            get
-            {
-                return ExperienceData.GainedBaseExperience * (TimeSpan.FromHours(1).TotalMilliseconds / ExperienceData.ElapsedTime.TotalMilliseconds);
-            }
-        }
-
+        
         public void Reset()
         {
             ExperienceData.GainedBaseExperience = 0;
             ExperienceData.StartTime = DateTime.Now;
-            NotifyOfPropertyChange(() => TimeToLevel);
-            NotifyOfPropertyChange(() => ExpPerHour);
+            NotifyOfPropertyChange(() => ExperienceData.TimeToLevel);
+            NotifyOfPropertyChange(() => ExperienceData.ExperiencePerHour);
         }
 
         public void InterceptWindowDoubleClick(MouseButtonEventArgs args)
@@ -214,8 +169,46 @@ namespace TOSExpViewer
                 ExperienceData.GainedBaseExperience += ExperienceData.LastExperienceGain;
             }
 
-            NotifyOfPropertyChange(() => ExpPerHour);
-            NotifyOfPropertyChange(() => TimeToLevel);
+            ExperienceData.ExperiencePerHour = ExperienceData.GainedBaseExperience * (int)(TimeSpan.FromHours(1).TotalMilliseconds / ExperienceData.ElapsedTime.TotalMilliseconds);
+
+            ExperienceData.TimeToLevel = CalculateTimeToLevel(ExperienceData);
+
+            experienceDataToTextService.writeToFile(ExperienceData);
+        }
+
+        private string CalculateTimeToLevel(ExperienceData experienceData)
+        {
+            if (experienceData.LastExperienceGain == 0)
+            {
+                return Constants.INFINITY;
+            }
+
+            var totalExperienceRequired = experienceData.RequiredBaseExperience - experienceData.CurrentBaseExperience;
+            var experiencePerSecond = experienceData.GainedBaseExperience / experienceData.ElapsedTime.TotalSeconds;
+
+            if (experiencePerSecond == 0 || double.IsNaN(experiencePerSecond))
+            {
+                return Constants.INFINITY;
+            }
+
+            var estimatedTimeToLevel = TimeSpan.FromSeconds(totalExperienceRequired / experiencePerSecond);
+
+            if (estimatedTimeToLevel >= TimeSpan.FromDays(1) || estimatedTimeToLevel < TimeSpan.Zero)
+            {
+                return Constants.INFINITY;
+            }
+
+            if (estimatedTimeToLevel >= TimeSpan.FromHours(1))
+            {
+                return $"{estimatedTimeToLevel.Hours:00}h {estimatedTimeToLevel.Minutes:00}m";
+            }
+
+            if (estimatedTimeToLevel >= TimeSpan.FromMinutes(1))
+            {
+                return $"~{estimatedTimeToLevel.Minutes}m";
+            }
+
+            return $"~{estimatedTimeToLevel.Seconds}s";
         }
 
         private async Task ValidateConfiguration()

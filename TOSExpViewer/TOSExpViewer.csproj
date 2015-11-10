@@ -87,9 +87,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
+    <Compile Include="Core\Constants.cs" />
     <Compile Include="Core\WindowSettingsBuilder.cs" />
     <Compile Include="Model\ExperienceData.cs" />
     <Compile Include="Core\InvertedBooleanConverter.cs" />
+    <Compile Include="Service\ExperienceDataToTextService.cs" />
     <Compile Include="ShellViewModel.cs" />
     <Compile Include="Model\TosMonitor.cs" />
   </ItemGroup>

@@ -1,5 +1,6 @@
 using System;
 using Caliburn.Micro;
+using TOSExpViewer.Core;
 
 namespace TOSExpViewer.Model
 {
@@ -11,7 +12,9 @@ namespace TOSExpViewer.Model
         private int previousRequiredBaseExperience;
         private int gainedBaseExperience { get; set; }
         private DateTime startTime;
-        
+        private int experiencePerHour;
+        private string timeToLevel;
+
         public int CurrentBaseExperience
         {
             get { return currentBaseExperience; }
@@ -26,6 +29,8 @@ namespace TOSExpViewer.Model
                 NotifyOfPropertyChange(() => CurrentBaseExperience);
                 NotifyOfPropertyChange(() => CurrentBaseExperiencePercent);
                 NotifyOfPropertyChange(() => KillsTilNextLevel);
+                NotifyOfPropertyChange(() => ExperiencePerHour);
+                NotifyOfPropertyChange(() => TimeToLevel);
             }
         }
 
@@ -59,6 +64,8 @@ namespace TOSExpViewer.Model
                 NotifyOfPropertyChange(() => RequiredBaseExperience);
                 NotifyOfPropertyChange(() => CurrentBaseExperiencePercent);
                 NotifyOfPropertyChange(() => KillsTilNextLevel);
+                NotifyOfPropertyChange(() => ExperiencePerHour);
+                NotifyOfPropertyChange(() => TimeToLevel);
             }
         }
         
@@ -112,12 +119,33 @@ namespace TOSExpViewer.Model
             }
         }
 
+        public int ExperiencePerHour
+        {
+            get { return experiencePerHour; }
+            set
+            {
+                experiencePerHour = value;
+                NotifyOfPropertyChange(() => ExperiencePerHour);
+            }
+        }
+
+        public string TimeToLevel
+        {
+            get { return timeToLevel; }
+            set
+            {
+                timeToLevel = value;
+                NotifyOfPropertyChange(() => TimeToLevel);
+            }
+        }
+
         public void Reset()
         {
             CurrentBaseExperience = 0;
             RequiredBaseExperience = 0;
             LastExperienceGain = 0;
             PreviousRequiredBaseExperience = 0;
+            ExperiencePerHour = 0;
             startTime = DateTime.Now;
         }
     }

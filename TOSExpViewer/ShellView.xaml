@@ -58,11 +58,11 @@
             <TextBlock Grid.Row="0" Grid.Column="4" Text="Kills TNL" Style="{StaticResource DataTextBlockStyle}" ToolTip="Kills to next level" />
             <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding ExperienceData.KillsTilNextLevel, StringFormat={}{0:n0}}" Style="{StaticResource DataTextBlockStyle}" />
 
-            <TextBlock Grid.Row="0" Grid.Column="5" Text="Exp/hr" Style="{StaticResource DataTextBlockStyle}" ToolTip="Experience points per hour" />
-            <TextBlock Grid.Row="1" Grid.Column="5" Text="{Binding ExpPerHour, StringFormat={}{0:n0}}" Style="{StaticResource DataTextBlockStyle}" />
+            <TextBlock Grid.Row="0" Grid.Column="5" Text="Exp/Hr" Style="{StaticResource DataTextBlockStyle}" ToolTip="Experience points per hour" />
+            <TextBlock Grid.Row="1" Grid.Column="5" Text="{Binding ExperienceData.ExperiencePerHour, StringFormat={}{0:n0}}" Style="{StaticResource DataTextBlockStyle}" />
 
             <TextBlock Grid.Row="0" Grid.Column="6" Text="Time TNL" Style="{StaticResource DataTextBlockStyle}" ToolTip="Time to next level" />
-            <TextBlock Grid.Row="1" Grid.Column="6" Text="{Binding TimeToLevel, StringFormat={}{0:F2}}" Style="{StaticResource DataTextBlockStyle}" />
+            <TextBlock Grid.Row="1" Grid.Column="6" Text="{Binding ExperienceData.TimeToLevel, StringFormat={}{0:F2}}" Style="{StaticResource DataTextBlockStyle}" />
 
             <Button Grid.Row="0" Grid.Column="7" Grid.RowSpan="2" x:Name="Reset" Content="RESET"
                 ToolTip="Resets the exp per hour/time to level values"
