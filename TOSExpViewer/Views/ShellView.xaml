@@ -1,5 +1,5 @@
 <controls:MetroWindow 
-    x:Class="TOSExpViewer.ShellView"
+    x:Class="TOSExpViewer.Views.ShellView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
@@ -7,21 +7,30 @@
     xmlns:cal="http://www.caliburnproject.org"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:core="clr-namespace:TOSExpViewer.Core"
-    xmlns:tosExpViewer="clr-namespace:TOSExpViewer"
+    xmlns:viewModels="clr-namespace:TOSExpViewer.ViewModels"
     mc:Ignorable="d"
     ResizeMode="CanMinimize"
-    d:DataContext="{d:DesignInstance Type=tosExpViewer:ShellViewModel, IsDesignTimeCreatable=True}"
+    d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel, IsDesignTimeCreatable=True}"
     cal:Bind.AtDesignTime="True"
     SizeToContent="WidthAndHeight"
     MinHeight="55"
-    cal:Message.Attach="[LocationChanged] = [WindowMoved()];[MouseDoubleClick] = [InterceptWindowDoubleClick($eventArgs)]" Icon="tos-exp.ico" Title="Tree of Savior Experience Viewer" TitleCaps="False">
+    ShowTitleBar="{Binding ShowTitleBar}" ShowMinButton="{Binding ShowTitleBar}" ShowMaxRestoreButton="{Binding ShowTitleBar}" ShowCloseButton="{Binding ShowTitleBar}"
+    cal:Message.Attach="[LocationChanged] = [WindowMoved()];[MouseDoubleClick] = [InterceptWindowDoubleClick($eventArgs)]" Icon="..\tos-exp.ico" Title="Tree of Savior Experience Viewer" TitleCaps="False">
     <!-- NOTE that the settings above for the window may be overridden during the app bootstrapper OnStartup() method -->
-
+    <controls:MetroWindow.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <core:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" />
+    </controls:MetroWindow.Resources>
+    
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands Visibility="{Binding ShowTitleBar, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ContentControl x:Name="ThemeSelector" cal:View.Model="{Binding ThemeSelector}" />
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+    
     <ContentControl>
-        <Grid Background="White" Margin="10">
-            <Grid.Resources>
-                <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-                <core:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" />
+        <Grid Margin="10">
+            <Grid.Resources>                
                 <Style x:Key="DataTextBlockStyle" TargetType="TextBlock">
                     <Setter Property="Margin" Value="7,0" />
                     <Setter Property="Visibility" Value="{Binding Attached, Converter={StaticResource BooleanToVisibilityConverter}}" />

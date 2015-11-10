@@ -46,5 +46,29 @@ namespace TOSExpViewer.Properties {
                 this["Left"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MetroThemeBaseColour {
+            get {
+                return ((string)(this["MetroThemeBaseColour"]));
+            }
+            set {
+                this["MetroThemeBaseColour"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MetroThemeAccentColour {
+            get {
+                return ((string)(this["MetroThemeAccentColour"]));
+            }
+            set {
+                this["MetroThemeAccentColour"] = value;
+            }
+        }
     }
 }
