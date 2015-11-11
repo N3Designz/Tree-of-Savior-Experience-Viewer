@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Caliburn.Micro;
 using Action = System.Action;
 
@@ -5,22 +6,40 @@ namespace TOSExpViewer.Model
 {
     public class MenuItem : PropertyChangedBase
     {
-        private readonly Action action;
-        private string name;
-        private bool isChecked;
+        private static readonly Action EmptyAction = () => { };
 
-        public MenuItem(Action action)
+        private readonly Action action;
+        private string menuItemText;
+        private bool isChecked;
+        private bool isCheckable;
+        private bool staysOpenOnClick;
+
+        public MenuItem() : this(EmptyAction)
+        {
+        }
+
+        public MenuItem(IEnumerable<MenuItem> menuItems) : this(EmptyAction, menuItems)
+        {
+        }
+
+        public MenuItem(Action action) : this(action, new MenuItem[] { })
         {
             this.action = action;
         }
 
-        public string Name
+        public MenuItem(Action action, IEnumerable<MenuItem> menuItems)
         {
-            get { return name; }
+            this.action = action;
+            MenuItems = new BindableCollection<MenuItem>(menuItems);
+        }
+
+        public string MenuItemText
+        {
+            get { return menuItemText; }
             set
             {
-                if (value == name) return;
-                name = value;
+                if (value == menuItemText) return;
+                menuItemText = value;
                 NotifyOfPropertyChange();
             }
         }
@@ -36,9 +55,35 @@ namespace TOSExpViewer.Model
             }
         }
 
-        public void Command()
+        public bool IsCheckable
+        {
+            get { return isCheckable; }
+            set
+            {
+                if (value == isCheckable) return;
+                isCheckable = value;
+                NotifyOfPropertyChange();
+            }
+        }
+
+        public bool StaysOpenOnClick
+        {
+            get { return staysOpenOnClick; }
+            set
+            {
+                if (value == staysOpenOnClick) return;
+                staysOpenOnClick = value;
+                NotifyOfPropertyChange(() => StaysOpenOnClick);
+            }
+        }
+
+        public BindableCollection<MenuItem> MenuItems { get; }
+
+        public void Execute()
         {
             action();
         }
+
+        public override string ToString() => $"{MenuItemText}, Items={MenuItems.Count}";
     }
 }
