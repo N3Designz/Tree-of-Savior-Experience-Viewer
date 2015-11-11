@@ -4,6 +4,7 @@ using System.Windows;
 using Caliburn.Micro;
 using TOSExpViewer.Core;
 using TOSExpViewer.Properties;
+using TOSExpViewer.ViewModels;
 
 namespace TOSExpViewer
 {
@@ -23,6 +24,7 @@ namespace TOSExpViewer
             container.Singleton<IWindowManager, WindowManager>();
             container.Singleton<IEventAggregator, EventAggregator>();
             container.PerRequest<ShellViewModel>();
+            container.PerRequest<ThemeSelectorViewModel>();
         }
 
         protected override object GetInstance(Type service, string key)

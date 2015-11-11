@@ -7,28 +7,40 @@ using System.Windows.Threading;
 using Caliburn.Micro;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using TOSExpViewer.Core;
 using TOSExpViewer.Model;
 using TOSExpViewer.Properties;
 using TOSExpViewer.Service;
-using TOSExpViewer.Core;
 
-namespace TOSExpViewer
+namespace TOSExpViewer.ViewModels
 {
     public class ShellViewModel : Screen
     {
         private readonly DispatcherTimer timer = new DispatcherTimer();
+        private readonly ExperienceDataToTextService experienceDataToTextService;
         private TosMonitor tosMonitor;
         private bool firstUpdate = true;
         private bool attached;
+        private bool showTitleBar = true;
 
         public ShellViewModel()
         {
-            if (Execute.InDesignMode)
+            if (!Execute.InDesignMode)
+                throw new InvalidOperationException("Constructor only accessible from design time");
+
+            Attached = true;
+        }
+
+        public ShellViewModel(ThemeSelectorViewModel themeSelectorViewModel)
+        {
+            if (themeSelectorViewModel == null)
             {
-                Attached = true;
-                return;
+                throw new ArgumentNullException(nameof(themeSelectorViewModel));
             }
 
+            ThemeSelector = themeSelectorViewModel;
+            ThemeSelector.ActivateWith(this);
+            experienceDataToTextService = new ExperienceDataToTextService(); // must not be initialized in design time
             timer.Tick += TimerOnTick;
         }
 
@@ -36,7 +48,7 @@ namespace TOSExpViewer
 
         public ExperienceData ExperienceData { get; } = new ExperienceData();
 
-        private ExperienceDataToTextService experienceDataToTextService = new ExperienceDataToTextService();
+        public ThemeSelectorViewModel ThemeSelector { get; set; }
 
         public bool Attached
         {
@@ -52,7 +64,22 @@ namespace TOSExpViewer
                 NotifyOfPropertyChange(() => Attached);
             }
         }
-        
+
+        public bool ShowTitleBar
+        {
+            get { return showTitleBar; }
+            set
+            {
+                if (value == showTitleBar)
+                {
+                    return;
+                }
+
+                showTitleBar = value;
+                NotifyOfPropertyChange(() => ShowTitleBar);
+            }
+        }
+
         public void Reset()
         {
             ExperienceData.GainedBaseExperience = 0;
@@ -63,16 +90,7 @@ namespace TOSExpViewer
 
         public void InterceptWindowDoubleClick(MouseButtonEventArgs args)
         {
-            var window = GetView() as MetroWindow;
-
-            if (window != null)
-            {
-                window.ShowTitleBar = !window.ShowTitleBar;
-                window.ShowMinButton = window.ShowTitleBar;
-                window.ShowMaxRestoreButton = window.ShowTitleBar;
-                window.ShowCloseButton = window.ShowTitleBar;
-            }
-
+            ShowTitleBar = !ShowTitleBar;
             args.Handled = true; // prevents the maximize event being triggered for the window
         }
 
@@ -123,7 +141,7 @@ namespace TOSExpViewer
                 {
                     return; // escape out, the client probably isn't running
                 }
-                
+
                 UpdateExperienceValues();
             }
             catch (Exception ex)

@@ -1,6 +1,5 @@
 using System;
 using Caliburn.Micro;
-using TOSExpViewer.Core;
 
 namespace TOSExpViewer.Model
 {
@@ -10,8 +9,7 @@ namespace TOSExpViewer.Model
         private int requiredBaseExperience;
         private int lastExperienceGain;
         private int previousRequiredBaseExperience;
-        private int gainedBaseExperience { get; set; }
-        private DateTime startTime;
+        private int gainedBaseExperience;
         private int experiencePerHour;
         private string timeToLevel;
 
@@ -29,8 +27,6 @@ namespace TOSExpViewer.Model
                 NotifyOfPropertyChange(() => CurrentBaseExperience);
                 NotifyOfPropertyChange(() => CurrentBaseExperiencePercent);
                 NotifyOfPropertyChange(() => KillsTilNextLevel);
-                NotifyOfPropertyChange(() => ExperiencePerHour);
-                NotifyOfPropertyChange(() => TimeToLevel);
             }
         }
 
@@ -39,12 +35,13 @@ namespace TOSExpViewer.Model
             get { return gainedBaseExperience; }
             set
             {
-                if(value == gainedBaseExperience)
+                if (value == gainedBaseExperience)
                 {
                     return;
                 }
 
                 gainedBaseExperience = value;
+                NotifyOfPropertyChange(() => GainedBaseExperience);
             }
         }
 
@@ -64,11 +61,9 @@ namespace TOSExpViewer.Model
                 NotifyOfPropertyChange(() => RequiredBaseExperience);
                 NotifyOfPropertyChange(() => CurrentBaseExperiencePercent);
                 NotifyOfPropertyChange(() => KillsTilNextLevel);
-                NotifyOfPropertyChange(() => ExperiencePerHour);
-                NotifyOfPropertyChange(() => TimeToLevel);
             }
         }
-        
+
         public double KillsTilNextLevel => Math.Ceiling((RequiredBaseExperience - CurrentBaseExperience) / (double)LastExperienceGain);
 
         /// <summary>  Experience gain is not differentiated between cards and monsters  </summary>
@@ -103,19 +98,13 @@ namespace TOSExpViewer.Model
             }
         }
 
-        public DateTime StartTime
-        {
-            set
-            {
-                startTime = DateTime.Now;
-            }
-        }
+        public DateTime StartTime { get; set; }
 
         public TimeSpan ElapsedTime
         {
             get
             {
-                return DateTime.Now - startTime;
+                return DateTime.Now - StartTime;
             }
         }
 
@@ -124,6 +113,11 @@ namespace TOSExpViewer.Model
             get { return experiencePerHour; }
             set
             {
+                if (value == experiencePerHour)
+                {
+                    return;
+                }
+
                 experiencePerHour = value;
                 NotifyOfPropertyChange(() => ExperiencePerHour);
             }
@@ -134,6 +128,11 @@ namespace TOSExpViewer.Model
             get { return timeToLevel; }
             set
             {
+                if (value == timeToLevel)
+                {
+                    return;
+                }
+
                 timeToLevel = value;
                 NotifyOfPropertyChange(() => TimeToLevel);
             }
@@ -146,7 +145,7 @@ namespace TOSExpViewer.Model
             LastExperienceGain = 0;
             PreviousRequiredBaseExperience = 0;
             ExperiencePerHour = 0;
-            startTime = DateTime.Now;
+            StartTime = DateTime.Now;
         }
     }
 }
