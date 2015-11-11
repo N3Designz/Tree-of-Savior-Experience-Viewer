@@ -9,8 +9,7 @@ using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using TOSExpViewer.Core;
 using TOSExpViewer.Model;
-using TOSExpViewer.Model.ExperienceComponents;
-using TOSExpViewer.Properties;
+using TOSExpViewer.Model.ExperienceControls;
 using TOSExpViewer.Service;
 
 namespace TOSExpViewer.ViewModels
@@ -30,39 +29,43 @@ namespace TOSExpViewer.ViewModels
                 throw new InvalidOperationException("Constructor only accessible from design time");
 
             Attached = true;
-            ExperienceComponents = new BindableCollection<ExperienceComponent>(new ExperienceComponent[]
+            ExperienceComponents = new BindableCollection<ExperienceControl>(new ExperienceControl[]
             {
-                new CurrentBaseExperienceComponent(),
-                new RequiredBaseExperienceComponent(), 
-                new CurrentBaseExperiencePercentComponent(), 
-                new LastExperienceGainComponent(), 
-                new KillsTilNextLevelComponent(), 
-                new ExperiencePerHourComponent(), 
-                new TimeToLevelComponent(), 
+                new CurrentBaseExperienceControl(),
+                new RequiredBaseExperienceControl(), 
+                new CurrentBaseExperiencePercentControl(), 
+                new LastExperienceGainControl(), 
+                new KillsTilNextLevelControl(), 
+                new ExperiencePerHourControl(), 
+                new TimeToLevelControl(), 
             });
         }
 
-        public ShellViewModel(ThemeSelectorViewModel themeSelectorViewModel)
+        public ShellViewModel(
+            SettingsViewModel settingsViewModelViewModel,
+            ExperienceData experienceData,
+            ExperienceControl[] experienceControls)
         {
-            if (themeSelectorViewModel == null)
+            if (settingsViewModelViewModel == null)
             {
-                throw new ArgumentNullException(nameof(themeSelectorViewModel));
+                throw new ArgumentNullException(nameof(settingsViewModelViewModel));
             }
 
-            ThemeSelector = themeSelectorViewModel;
-            ThemeSelector.ActivateWith(this);
-            experienceDataToTextService = new ExperienceDataToTextService(); // must not be initialized in design time
-            ExperienceData = new ExperienceData();
-            ExperienceComponents = new BindableCollection<ExperienceComponent>(new ExperienceComponent[]
+            if (experienceData == null)
             {
-                new CurrentBaseExperienceComponent(ExperienceData),
-                new RequiredBaseExperienceComponent(ExperienceData),
-                new CurrentBaseExperiencePercentComponent(ExperienceData),
-                new LastExperienceGainComponent(ExperienceData),
-                new KillsTilNextLevelComponent(ExperienceData),
-                new ExperiencePerHourComponent(ExperienceData),
-                new TimeToLevelComponent(ExperienceData),
-            });
+                throw new ArgumentNullException(nameof(experienceData));
+            }
+
+            if (experienceControls == null)
+            {
+                throw new ArgumentNullException(nameof(experienceControls));
+            }
+
+            SettingsViewModel = settingsViewModelViewModel;
+            ExperienceData = experienceData;
+            SettingsViewModel.ActivateWith(this);
+            experienceDataToTextService = new ExperienceDataToTextService(); // must not be initialized in design time
+            ExperienceComponents = new BindableCollection<ExperienceControl>(experienceControls);
 
             timer.Tick += TimerOnTick;
         }
@@ -71,9 +74,9 @@ namespace TOSExpViewer.ViewModels
 
         public ExperienceData ExperienceData { get; }
 
-        public BindableCollection<ExperienceComponent> ExperienceComponents { get; set; }
+        public BindableCollection<ExperienceControl> ExperienceComponents { get; set; }
 
-        public ThemeSelectorViewModel ThemeSelector { get; set; }
+        public SettingsViewModel SettingsViewModel { get; set; }
 
         public bool Attached
         {
@@ -87,6 +90,7 @@ namespace TOSExpViewer.ViewModels
 
                 attached = value;
                 NotifyOfPropertyChange(() => Attached);
+                NotifyOfPropertyChange(() => ShowResetButton);
             }
         }
 
@@ -105,11 +109,15 @@ namespace TOSExpViewer.ViewModels
             }
         }
 
+        public bool ShowResetButton => Attached &&
+                                       (!Properties.Settings.Default.HideExperiencePerHour ||
+                                       !Properties.Settings.Default.HideTimeToLevel);
+
         public void Reset()
         {
             ExperienceData.GainedBaseExperience = 0;
             ExperienceData.StartTime = DateTime.Now;
-            NotifyOfPropertyChange(() => ExperienceData.TimeToLevel);
+            ExperienceData.TimeToLevel = CalculateTimeToLevel(ExperienceData);
             NotifyOfPropertyChange(() => ExperienceData.ExperiencePerHour);
         }
 
@@ -128,21 +136,24 @@ namespace TOSExpViewer.ViewModels
                 return;
             }
 
-            Settings.Default.Top = window.Top;
-            Settings.Default.Left = window.Left;
-            Settings.Default.Save();
-        }
-
-        public void HideCurrentExperience()
-        {
-            Settings.Default.HideCurrentBaseExperience = true;
-            Settings.Default.Save();
+            Properties.Settings.Default.Top = window.Top;
+            Properties.Settings.Default.Left = window.Left;
+            Properties.Settings.Default.Save();
         }
 
         protected override async void OnViewReady(object view)
         {
             base.OnViewReady(view);
             await ValidateConfiguration();
+
+            Properties.Settings.Default.PropertyChanged += (sender, args) =>
+            {
+                if (args.PropertyName == nameof(Properties.Settings.Default.HideExperiencePerHour) ||
+                    args.PropertyName == nameof(Properties.Settings.Default.HideTimeToLevel))
+                {
+                    NotifyOfPropertyChange(() => ShowResetButton);
+                }
+            };
         }
 
         public override void TryClose(bool? dialogResult = null)

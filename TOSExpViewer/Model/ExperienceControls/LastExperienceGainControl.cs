@@ -2,19 +2,19 @@ using System;
 using Caliburn.Micro;
 using TOSExpViewer.Properties;
 
-namespace TOSExpViewer.Model.ExperienceComponents
+namespace TOSExpViewer.Model.ExperienceControls
 {
-    public class ExperiencePerHourComponent : ExperienceComponent
+    public class LastExperienceGainControl : ExperienceControl
     {
-        public ExperiencePerHourComponent()
+        public LastExperienceGainControl()
         {
             if (!Execute.InDesignMode)
                 throw new InvalidOperationException("Constructor only accessible from design time");
 
-            Value = 1754.ToString("N0");
+            Value = 112.ToString("N0");
         }
 
-        public ExperiencePerHourComponent(ExperienceData experienceData)
+        public LastExperienceGainControl(ExperienceData experienceData)
         {
             if (experienceData == null)
             {
@@ -22,27 +22,27 @@ namespace TOSExpViewer.Model.ExperienceComponents
             }
 
             // Set initial values
-            Show = !Settings.Default.HideExperiencePerHour;
-            Value = experienceData.ExperiencePerHour.ToString("N0");
+            Show = !Settings.Default.HideLastExperienceGain;
+            Value = experienceData.LastExperienceGain.ToString("N0");
 
             // Hook up property change events to keep everything in sync
             experienceData.PropertyChanged += (sender, args) =>
             {
-                Value = experienceData.ExperiencePerHour.ToString("N0");
+                Value = experienceData.LastExperienceGain.ToString("N0");
             };
 
             PropertyChanged += (sender, args) =>
             {
                 if (args.PropertyName == nameof(Show))
                 {
-                    Settings.Default.HideExperiencePerHour = !Show;
+                    Settings.Default.HideLastExperienceGain = !Show;
                     Settings.Default.Save();
                 }
             };
         }
 
-        public override string DisplayName { get; set; } = "Exp/Hr";
+        public override string DisplayName { get; set; } = "Last Exp Gain";
 
-        public override string HideComponentText { get; set; } = "Hide Exp/Hr";
+        public override string HideComponentText { get; set; } = "Hide Last Exp Gain";
     }
 }

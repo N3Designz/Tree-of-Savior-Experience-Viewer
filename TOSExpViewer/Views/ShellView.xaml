@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:core="clr-namespace:TOSExpViewer.Core"
     xmlns:viewModels="clr-namespace:TOSExpViewer.ViewModels"
-    xmlns:experienceComponents="clr-namespace:TOSExpViewer.Model.ExperienceComponents"
+    xmlns:experienceControls="clr-namespace:TOSExpViewer.Model.ExperienceControls"
     mc:Ignorable="d"
     ResizeMode="CanMinimize"
     d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel, IsDesignTimeCreatable=True}"
@@ -23,10 +23,9 @@
         <core:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" />
         <Style x:Key="DataTextBlockStyle" TargetType="TextBlock">
             <Setter Property="Margin" Value="7,0" />
-            <Setter Property="Visibility" Value="{Binding Attached, Converter={StaticResource BooleanToVisibilityConverter}}" />
         </Style>
         
-        <DataTemplate x:Key="ExperienceComponentTemplate" DataType="experienceComponents:ExperienceComponent">
+        <DataTemplate x:Key="ExperienceComponentTemplate" DataType="experienceControls:ExperienceControl">
             <StackPanel Visibility="{Binding Show, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <StackPanel.ContextMenu>
                     <ContextMenu>
@@ -42,7 +41,7 @@
     
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands Visibility="{Binding ShowTitleBar, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <ContentControl x:Name="ThemeSelector" cal:View.Model="{Binding ThemeSelector}" />
+            <ContentControl x:Name="Settings" cal:View.Model="{Binding SettingsViewModel}" VerticalAlignment="Stretch" />
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
     
@@ -53,7 +52,8 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <ItemsControl Grid.Row="0" Grid.Column="0" ItemsSource="{Binding ExperienceComponents}" ItemTemplate="{StaticResource ExperienceComponentTemplate}">
+            <ItemsControl Grid.Row="0" Grid.Column="0" ItemsSource="{Binding ExperienceComponents}" ItemTemplate="{StaticResource ExperienceComponentTemplate}"
+                          Visibility="{Binding Attached, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal"/>
@@ -63,7 +63,7 @@
             
             <Button Grid.Row="0" Grid.Column="1" x:Name="Reset" Content="RESET"
                 ToolTip="Resets the exp per hour/time to level values"
-                Visibility="{Binding Attached, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                Visibility="{Binding ShowResetButton, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
             <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
                    Text="TOS CLIENT NOT RUNNING" FontSize="24" FontWeight="Bold" TextAlignment="Center" HorizontalAlignment="Center"

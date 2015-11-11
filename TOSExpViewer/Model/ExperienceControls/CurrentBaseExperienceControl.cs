@@ -1,13 +1,12 @@
 using System;
 using Caliburn.Micro;
-using TOSExpViewer.Core;
 using TOSExpViewer.Properties;
 
-namespace TOSExpViewer.Model.ExperienceComponents
+namespace TOSExpViewer.Model.ExperienceControls
 {
-    public class CurrentBaseExperienceComponent : ExperienceComponent
+    public class CurrentBaseExperienceControl : ExperienceControl
     {
-        public CurrentBaseExperienceComponent()
+        public CurrentBaseExperienceControl()
         {
             if (!Execute.InDesignMode)
                 throw new InvalidOperationException("Constructor only accessible from design time");
@@ -15,7 +14,7 @@ namespace TOSExpViewer.Model.ExperienceComponents
             Value = 9123.ToString("N0");
         }
 
-        public CurrentBaseExperienceComponent(ExperienceData experienceData)
+        public CurrentBaseExperienceControl(ExperienceData experienceData)
         {
             if (experienceData == null)
             {

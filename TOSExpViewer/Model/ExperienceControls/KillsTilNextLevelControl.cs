@@ -2,19 +2,19 @@ using System;
 using Caliburn.Micro;
 using TOSExpViewer.Properties;
 
-namespace TOSExpViewer.Model.ExperienceComponents
+namespace TOSExpViewer.Model.ExperienceControls
 {
-    public class LastExperienceGainComponent : ExperienceComponent
+    public class KillsTilNextLevelControl : ExperienceControl
     {
-        public LastExperienceGainComponent()
+        public KillsTilNextLevelControl()
         {
             if (!Execute.InDesignMode)
                 throw new InvalidOperationException("Constructor only accessible from design time");
 
-            Value = 112.ToString("N0");
+            Value = 8.ToString("N0");
         }
 
-        public LastExperienceGainComponent(ExperienceData experienceData)
+        public KillsTilNextLevelControl(ExperienceData experienceData)
         {
             if (experienceData == null)
             {
@@ -22,27 +22,27 @@ namespace TOSExpViewer.Model.ExperienceComponents
             }
 
             // Set initial values
-            Show = !Settings.Default.HideLastExperienceGain;
-            Value = experienceData.LastExperienceGain.ToString("N0");
+            Show = !Settings.Default.HideKillsTilNextLevel;
+            Value = experienceData.KillsTilNextLevel.ToString("N0");
 
             // Hook up property change events to keep everything in sync
             experienceData.PropertyChanged += (sender, args) =>
             {
-                Value = experienceData.LastExperienceGain.ToString("N0");
+                Value = experienceData.KillsTilNextLevel.ToString("N0");
             };
 
             PropertyChanged += (sender, args) =>
             {
                 if (args.PropertyName == nameof(Show))
                 {
-                    Settings.Default.HideLastExperienceGain = !Show;
+                    Settings.Default.HideKillsTilNextLevel = !Show;
                     Settings.Default.Save();
                 }
             };
         }
 
-        public override string DisplayName { get; set; } = "Last Exp Gain";
+        public override string DisplayName { get; set; } = "Kills TNL";
 
-        public override string HideComponentText { get; set; } = "Hide Last Exp Gain";
+        public override string HideComponentText { get; set; } = "Hide Kills TNL";
     }
 }

@@ -92,21 +92,21 @@
     <Compile Include="Core\MetroThemeColours.cs" />
     <Compile Include="Core\StringExtensions.cs" />
     <Compile Include="Core\WindowSettingsBuilder.cs" />
-    <Compile Include="Model\ExperienceComponents\CurrentBaseExperiencePercentComponent.cs" />
+    <Compile Include="Model\ExperienceControls\CurrentBaseExperiencePercentControl.cs" />
     <Compile Include="Model\ExperienceData.cs" />
     <Compile Include="Core\InvertedBooleanConverter.cs" />
-    <Compile Include="Model\ExperienceComponents\ExperiencePerHourComponent.cs" />
-    <Compile Include="Model\ExperienceComponents\KillsTilNextLevelComponent.cs" />
-    <Compile Include="Model\ExperienceComponents\LastExperienceGainComponent.cs" />
+    <Compile Include="Model\ExperienceControls\ExperiencePerHourControl.cs" />
+    <Compile Include="Model\ExperienceControls\KillsTilNextLevelControl.cs" />
+    <Compile Include="Model\ExperienceControls\LastExperienceGainControl.cs" />
     <Compile Include="Model\MenuItem.cs" />
-    <Compile Include="Model\ExperienceComponents\RequiredBaseExperienceComponent.cs" />
-    <Compile Include="Model\ExperienceComponents\TimeToLevelComponent.cs" />
+    <Compile Include="Model\ExperienceControls\RequiredBaseExperienceControl.cs" />
+    <Compile Include="Model\ExperienceControls\TimeToLevelControl.cs" />
     <Compile Include="Service\ExperienceDataToTextService.cs" />
-    <Compile Include="Model\ExperienceComponents\CurrentBaseExperienceComponent.cs" />
-    <Compile Include="Model\ExperienceComponents\ExperienceComponent.cs" />
+    <Compile Include="Model\ExperienceControls\CurrentBaseExperienceControl.cs" />
+    <Compile Include="Model\ExperienceControls\ExperienceControl.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Model\TosMonitor.cs" />
-    <Compile Include="ViewModels\ThemeSelectorViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -142,7 +142,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ThemeSelectorView.xaml">
+    <Page Include="Views\SettingsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

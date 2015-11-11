@@ -2,19 +2,19 @@ using System;
 using Caliburn.Micro;
 using TOSExpViewer.Properties;
 
-namespace TOSExpViewer.Model.ExperienceComponents
+namespace TOSExpViewer.Model.ExperienceControls
 {
-    public class CurrentBaseExperiencePercentComponent : ExperienceComponent
+    public class RequiredBaseExperienceControl : ExperienceControl
     {
-        public CurrentBaseExperiencePercentComponent()
+        public RequiredBaseExperienceControl()
         {
             if (!Execute.InDesignMode)
                 throw new InvalidOperationException("Constructor only accessible from design time");
 
-            Value = 91.23.ToString("N4");
+            Value = 10000.ToString("N0");
         }
 
-        public CurrentBaseExperiencePercentComponent(ExperienceData experienceData)
+        public RequiredBaseExperienceControl(ExperienceData experienceData)
         {
             if (experienceData == null)
             {
@@ -22,27 +22,27 @@ namespace TOSExpViewer.Model.ExperienceComponents
             }
 
             // Set initial values
-            Show = !Settings.Default.HideCurrentBaseExperencePercent;
-            Value = experienceData.CurrentBaseExperiencePercent.ToString("N4");
+            Show = !Settings.Default.HideRequiredBaseExperience;
+            Value = experienceData.RequiredBaseExperience.ToString("N0");
 
             // Hook up property change events to keep everything in sync
             experienceData.PropertyChanged += (sender, args) =>
             {
-                Value = experienceData.CurrentBaseExperiencePercent.ToString("N4");
+                Value = experienceData.RequiredBaseExperience.ToString("N0");
             };
 
             PropertyChanged += (sender, args) =>
             {
                 if (args.PropertyName == nameof(Show))
                 {
-                    Settings.Default.HideCurrentBaseExperencePercent = !Show;
+                    Settings.Default.HideRequiredBaseExperience = !Show;
                     Settings.Default.Save();
                 }
             };
         }
 
-        public override string DisplayName { get; set; } = "Current %";
+        public override string DisplayName { get; set; } = "Required Exp";
 
-        public override string HideComponentText { get; set; } = "Hide Current Base %";
+        public override string HideComponentText { get; set; } = "Hide Required Exp";
     }
 }

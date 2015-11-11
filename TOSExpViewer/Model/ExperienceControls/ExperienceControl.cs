@@ -1,8 +1,8 @@
 using Caliburn.Micro;
 
-namespace TOSExpViewer.Model.ExperienceComponents
+namespace TOSExpViewer.Model.ExperienceControls
 {
-    public abstract class ExperienceComponent : Screen
+    public abstract class ExperienceControl : Screen
     {
         private string value;
         private bool show = true;

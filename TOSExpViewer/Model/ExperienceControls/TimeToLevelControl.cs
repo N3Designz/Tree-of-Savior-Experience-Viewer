@@ -2,19 +2,19 @@ using System;
 using Caliburn.Micro;
 using TOSExpViewer.Properties;
 
-namespace TOSExpViewer.Model.ExperienceComponents
+namespace TOSExpViewer.Model.ExperienceControls
 {
-    public class RequiredBaseExperienceComponent : ExperienceComponent
+    public class TimeToLevelControl : ExperienceControl
     {
-        public RequiredBaseExperienceComponent()
+        public TimeToLevelControl()
         {
             if (!Execute.InDesignMode)
                 throw new InvalidOperationException("Constructor only accessible from design time");
 
-            Value = 10000.ToString("N0");
+            Value = "~30m";
         }
 
-        public RequiredBaseExperienceComponent(ExperienceData experienceData)
+        public TimeToLevelControl(ExperienceData experienceData)
         {
             if (experienceData == null)
             {
@@ -22,27 +22,27 @@ namespace TOSExpViewer.Model.ExperienceComponents
             }
 
             // Set initial values
-            Show = !Settings.Default.HideRequiredBaseExperience;
-            Value = experienceData.RequiredBaseExperience.ToString("N0");
+            Show = !Settings.Default.HideTimeToLevel;
+            Value = experienceData.TimeToLevel;
 
             // Hook up property change events to keep everything in sync
             experienceData.PropertyChanged += (sender, args) =>
             {
-                Value = experienceData.RequiredBaseExperience.ToString("N0");
+                Value = experienceData.TimeToLevel;
             };
 
             PropertyChanged += (sender, args) =>
             {
                 if (args.PropertyName == nameof(Show))
                 {
-                    Settings.Default.HideRequiredBaseExperience = !Show;
+                    Settings.Default.HideTimeToLevel = !Show;
                     Settings.Default.Save();
                 }
             };
         }
 
-        public override string DisplayName { get; set; } = "Required Exp";
+        public override string DisplayName { get; set; } = "Time TNL";
 
-        public override string HideComponentText { get; set; } = "Hide Required Exp";
+        public override string HideComponentText { get; set; } = "Hide Time TNL";
     }
 }
