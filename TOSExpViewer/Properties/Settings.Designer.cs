@@ -70,5 +70,101 @@ namespace TOSExpViewer.Properties {
                 this["MetroThemeAccentColour"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HideCurrentBaseExperience {
+            get {
+                return ((bool)(this["HideCurrentBaseExperience"]));
+            }
+            set {
+                this["HideCurrentBaseExperience"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HideGainedBaseExperience {
+            get {
+                return ((bool)(this["HideGainedBaseExperience"]));
+            }
+            set {
+                this["HideGainedBaseExperience"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HideCurrentBaseExperencePercent {
+            get {
+                return ((bool)(this["HideCurrentBaseExperencePercent"]));
+            }
+            set {
+                this["HideCurrentBaseExperencePercent"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HideRequiredBaseExperience {
+            get {
+                return ((bool)(this["HideRequiredBaseExperience"]));
+            }
+            set {
+                this["HideRequiredBaseExperience"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HideKillsTilNextLevel {
+            get {
+                return ((bool)(this["HideKillsTilNextLevel"]));
+            }
+            set {
+                this["HideKillsTilNextLevel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HideLastExperienceGain {
+            get {
+                return ((bool)(this["HideLastExperienceGain"]));
+            }
+            set {
+                this["HideLastExperienceGain"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HideExperiencePerHour {
+            get {
+                return ((bool)(this["HideExperiencePerHour"]));
+            }
+            set {
+                this["HideExperiencePerHour"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HideTimeToLevel {
+            get {
+                return ((bool)(this["HideTimeToLevel"]));
+            }
+            set {
+                this["HideTimeToLevel"] = value;
+            }
+        }
     }
 }

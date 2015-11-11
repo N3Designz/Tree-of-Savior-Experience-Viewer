@@ -9,6 +9,7 @@ using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using TOSExpViewer.Core;
 using TOSExpViewer.Model;
+using TOSExpViewer.Model.ExperienceComponents;
 using TOSExpViewer.Properties;
 using TOSExpViewer.Service;
 
@@ -29,6 +30,16 @@ namespace TOSExpViewer.ViewModels
                 throw new InvalidOperationException("Constructor only accessible from design time");
 
             Attached = true;
+            ExperienceComponents = new BindableCollection<ExperienceComponent>(new ExperienceComponent[]
+            {
+                new CurrentBaseExperienceComponent(),
+                new RequiredBaseExperienceComponent(), 
+                new CurrentBaseExperiencePercentComponent(), 
+                new LastExperienceGainComponent(), 
+                new KillsTilNextLevelComponent(), 
+                new ExperiencePerHourComponent(), 
+                new TimeToLevelComponent(), 
+            });
         }
 
         public ShellViewModel(ThemeSelectorViewModel themeSelectorViewModel)
@@ -41,12 +52,26 @@ namespace TOSExpViewer.ViewModels
             ThemeSelector = themeSelectorViewModel;
             ThemeSelector.ActivateWith(this);
             experienceDataToTextService = new ExperienceDataToTextService(); // must not be initialized in design time
+            ExperienceData = new ExperienceData();
+            ExperienceComponents = new BindableCollection<ExperienceComponent>(new ExperienceComponent[]
+            {
+                new CurrentBaseExperienceComponent(ExperienceData),
+                new RequiredBaseExperienceComponent(ExperienceData),
+                new CurrentBaseExperiencePercentComponent(ExperienceData),
+                new LastExperienceGainComponent(ExperienceData),
+                new KillsTilNextLevelComponent(ExperienceData),
+                new ExperiencePerHourComponent(ExperienceData),
+                new TimeToLevelComponent(ExperienceData),
+            });
+
             timer.Tick += TimerOnTick;
         }
 
         public override string DisplayName { get; set; } = "Tree of Savior Experience Viewer";
 
-        public ExperienceData ExperienceData { get; } = new ExperienceData();
+        public ExperienceData ExperienceData { get; }
+
+        public BindableCollection<ExperienceComponent> ExperienceComponents { get; set; }
 
         public ThemeSelectorViewModel ThemeSelector { get; set; }
 
@@ -105,6 +130,12 @@ namespace TOSExpViewer.ViewModels
 
             Settings.Default.Top = window.Top;
             Settings.Default.Left = window.Left;
+            Settings.Default.Save();
+        }
+
+        public void HideCurrentExperience()
+        {
+            Settings.Default.HideCurrentBaseExperience = true;
             Settings.Default.Save();
         }
 
