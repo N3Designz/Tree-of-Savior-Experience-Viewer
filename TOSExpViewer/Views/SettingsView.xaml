@@ -16,6 +16,7 @@
                     <Setter Property="cal:Message.Attach" Value="[Click] = [Execute]" />
                     <Setter Property="IsCheckable" Value="{Binding IsCheckable}" />
                     <Setter Property="IsChecked" Value="{Binding IsChecked}" />
+                    <Setter Property="StaysOpenOnClick" Value="{Binding StaysOpenOnClick}"></Setter>
                 </Style>
             </MenuItem.ItemContainerStyle>
             <MenuItem.ItemTemplate>

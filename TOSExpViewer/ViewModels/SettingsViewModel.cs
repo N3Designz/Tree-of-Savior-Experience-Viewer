@@ -35,7 +35,8 @@ namespace TOSExpViewer.ViewModels
                 {
                     IsChecked = x.Show,
                     IsCheckable = true,
-                    MenuItemText = x.DisplayName
+                    MenuItemText = x.DisplayName,
+                    StaysOpenOnClick = true
                 };
 
                 x.PropertyChanged += (sender, args) =>
@@ -80,7 +81,8 @@ namespace TOSExpViewer.ViewModels
                 var menuItem = new MenuItem(action)
                 {
                     MenuItemText = themeBaseColour.ToString().ToFriendlyString(),
-                    IsCheckable = true
+                    IsCheckable = true,
+                    StaysOpenOnClick = true
                 };
                 menuItem.IsChecked = string.Equals(Settings.Default.MetroThemeBaseColour, menuItem.MenuItemText.ReverseFriendlyString());
 
@@ -102,7 +104,8 @@ namespace TOSExpViewer.ViewModels
                 var menuItem = new MenuItem(action)
                 {
                     MenuItemText = themeAccentColour.ToString().ToFriendlyString(),
-                    IsCheckable = true
+                    IsCheckable = true,
+                    StaysOpenOnClick = true
                 };
                 menuItem.IsChecked = string.Equals(Settings.Default.MetroThemeAccentColour, menuItem.MenuItemText);
                 accentColourMenuItems.Add(menuItem);

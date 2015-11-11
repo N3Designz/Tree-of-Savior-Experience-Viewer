@@ -12,6 +12,7 @@ namespace TOSExpViewer.Model
         private string menuItemText;
         private bool isChecked;
         private bool isCheckable;
+        private bool staysOpenOnClick;
 
         public MenuItem() : this(EmptyAction)
         {
@@ -62,6 +63,17 @@ namespace TOSExpViewer.Model
                 if (value == isCheckable) return;
                 isCheckable = value;
                 NotifyOfPropertyChange();
+            }
+        }
+
+        public bool StaysOpenOnClick
+        {
+            get { return staysOpenOnClick; }
+            set
+            {
+                if (value == staysOpenOnClick) return;
+                staysOpenOnClick = value;
+                NotifyOfPropertyChange(() => StaysOpenOnClick);
             }
         }
 
