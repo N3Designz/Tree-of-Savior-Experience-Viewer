@@ -34,6 +34,7 @@ namespace TOSExpViewer
                 new RequiredBaseExperienceControl(experienceData),
                 new CurrentBaseExperiencePercentControl(experienceData),
                 new LastExperienceGainControl(experienceData),
+                new LastExperienceGainPercentControl(experienceData),
                 new KillsTilNextLevelControl(experienceData),
                 new ExperiencePerHourControl(experienceData),
                 new TimeToLevelControl(experienceData),
