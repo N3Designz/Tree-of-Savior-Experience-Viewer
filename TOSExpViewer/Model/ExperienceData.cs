@@ -61,6 +61,7 @@ namespace TOSExpViewer.Model
                 NotifyOfPropertyChange(() => RequiredBaseExperience);
                 NotifyOfPropertyChange(() => CurrentBaseExperiencePercent);
                 NotifyOfPropertyChange(() => KillsTilNextLevel);
+                NotifyOfPropertyChange(() => LastExperienceGainPercent);
             }
         }
 
@@ -80,8 +81,11 @@ namespace TOSExpViewer.Model
                 lastExperienceGain = value;
                 NotifyOfPropertyChange(() => LastExperienceGain);
                 NotifyOfPropertyChange(() => KillsTilNextLevel);
+                NotifyOfPropertyChange(() => LastExperienceGainPercent);
             }
         }
+
+        public float LastExperienceGainPercent => (lastExperienceGain / (float) requiredBaseExperience) * 100;
 
         public int PreviousRequiredBaseExperience
         {

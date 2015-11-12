@@ -166,5 +166,17 @@ namespace TOSExpViewer.Properties {
                 this["HideTimeToLevel"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HideLastExperienceGainPercent {
+            get {
+                return ((bool)(this["HideLastExperienceGainPercent"]));
+            }
+            set {
+                this["HideLastExperienceGainPercent"] = value;
+            }
+        }
     }
 }

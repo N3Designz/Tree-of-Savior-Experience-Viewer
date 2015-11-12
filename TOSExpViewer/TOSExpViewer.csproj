@@ -93,6 +93,7 @@
     <Compile Include="Core\StringExtensions.cs" />
     <Compile Include="Core\WindowSettingsBuilder.cs" />
     <Compile Include="Model\ExperienceControls\CurrentBaseExperiencePercentControl.cs" />
+    <Compile Include="Model\ExperienceControls\LastExperienceGainPercentControl.cs" />
     <Compile Include="Model\ExperienceData.cs" />
     <Compile Include="Core\InvertedBooleanConverter.cs" />
     <Compile Include="Model\ExperienceControls\ExperiencePerHourControl.cs" />

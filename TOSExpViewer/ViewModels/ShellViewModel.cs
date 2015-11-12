@@ -35,6 +35,7 @@ namespace TOSExpViewer.ViewModels
                 new RequiredBaseExperienceControl(), 
                 new CurrentBaseExperiencePercentControl(), 
                 new LastExperienceGainControl(), 
+                new LastExperienceGainPercentControl(), 
                 new KillsTilNextLevelControl(), 
                 new ExperiencePerHourControl(), 
                 new TimeToLevelControl(), 

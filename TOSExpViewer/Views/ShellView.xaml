@@ -41,7 +41,7 @@
     
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands Visibility="{Binding ShowTitleBar, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <ContentControl x:Name="Settings" cal:View.Model="{Binding SettingsViewModel}" VerticalAlignment="Stretch" />
+            <ContentControl x:Name="Settings" cal:View.Model="{Binding SettingsViewModel}" />
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
     

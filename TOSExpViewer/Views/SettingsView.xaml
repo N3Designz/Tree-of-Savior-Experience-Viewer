@@ -16,12 +16,12 @@
                     <Setter Property="cal:Message.Attach" Value="[Click] = [Execute]" />
                     <Setter Property="IsCheckable" Value="{Binding IsCheckable}" />
                     <Setter Property="IsChecked" Value="{Binding IsChecked}" />
-                    <Setter Property="StaysOpenOnClick" Value="{Binding StaysOpenOnClick}"></Setter>
+                    <Setter Property="StaysOpenOnClick" Value="{Binding StaysOpenOnClick}" />
                 </Style>
             </MenuItem.ItemContainerStyle>
             <MenuItem.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type model:MenuItem}" ItemsSource="{Binding Path=MenuItems}">
-                    <TextBlock Text="{Binding MenuItemText}" VerticalAlignment="Stretch" />
+                    <TextBlock Text="{Binding MenuItemText}" />
                 </HierarchicalDataTemplate>
             </MenuItem.ItemTemplate>
         </MenuItem>
