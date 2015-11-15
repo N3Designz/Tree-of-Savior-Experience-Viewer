@@ -10,13 +10,14 @@ using TOSExpViewer.Model;
 using TOSExpViewer.Model.ExperienceControls;
 using TOSExpViewer.Properties;
 using Action = System.Action;
+using System.Globalization;
 
 namespace TOSExpViewer.ViewModels
 {
     public class SettingsViewModel : Screen
     {
         private readonly List<MenuItem> baseThemeMenuItems = new List<MenuItem>();
-        private readonly List<MenuItem> accentColourMenuItems = new List<MenuItem>();
+        private readonly List<MenuItem> accentColorMenuItems = new List<MenuItem>();
 
         public SettingsViewModel()
         {
@@ -66,83 +67,93 @@ namespace TOSExpViewer.ViewModels
 
         private void InitializeMenuItems()
         {
-            foreach (MetroThemeBaseColour themeBaseColour in Enum.GetValues(typeof(MetroThemeBaseColour)))
+            foreach (MetroThemeBaseColor themeBaseColor in Enum.GetValues(typeof(MetroThemeBaseColor)))
             {
                 Action action = () =>
                 {
                     var currentTheme = ThemeManager.DetectAppStyle(Application.Current.MainWindow);
-                    var baseTheme = ThemeManager.GetAppTheme(themeBaseColour.ToString());
+                    var baseTheme = ThemeManager.GetAppTheme(themeBaseColor.ToString());
                     ChangeTheme(baseTheme, currentTheme.Item2);
 
-                    Settings.Default.MetroThemeBaseColour = themeBaseColour.ToString();
+                    Settings.Default.MetroThemeBaseColor = themeBaseColor.ToString();
                     Settings.Default.Save();
                 };
 
                 var menuItem = new MenuItem(action)
                 {
-                    MenuItemText = themeBaseColour.ToString().ToFriendlyString(),
+                    MenuItemText = themeBaseColor.ToString().ToFriendlyString(),
                     IsCheckable = true,
                     StaysOpenOnClick = true
                 };
-                menuItem.IsChecked = string.Equals(Settings.Default.MetroThemeBaseColour, menuItem.MenuItemText.ReverseFriendlyString());
+                menuItem.IsChecked = string.Equals(Settings.Default.MetroThemeBaseColor, menuItem.MenuItemText.ReverseFriendlyString());
 
                 baseThemeMenuItems.Add(menuItem);
             }
 
-            foreach (MetroThemeAccentColour themeAccentColour in Enum.GetValues(typeof(MetroThemeAccentColour)))
+            foreach (MetroThemeAccentColor themeAccentColor in Enum.GetValues(typeof(MetroThemeAccentColor)))
             {
                 Action action = () =>
                 {
                     var currentTheme = ThemeManager.DetectAppStyle(Application.Current.MainWindow);
-                    var accent = ThemeManager.GetAccent(themeAccentColour.ToString());
+                    var accent = ThemeManager.GetAccent(themeAccentColor.ToString());
                     ChangeTheme(currentTheme.Item1, accent);
 
-                    Settings.Default.MetroThemeAccentColour = themeAccentColour.ToString();
+                    Settings.Default.MetroThemeAccentColor = themeAccentColor.ToString();
                     Settings.Default.Save();
                 };
 
                 var menuItem = new MenuItem(action)
                 {
-                    MenuItemText = themeAccentColour.ToString().ToFriendlyString(),
+                    MenuItemText = themeAccentColor.ToString().ToFriendlyString(),
                     IsCheckable = true,
                     StaysOpenOnClick = true
                 };
-                menuItem.IsChecked = string.Equals(Settings.Default.MetroThemeAccentColour, menuItem.MenuItemText);
-                accentColourMenuItems.Add(menuItem);
+                menuItem.IsChecked = string.Equals(Settings.Default.MetroThemeAccentColor, menuItem.MenuItemText);
+                accentColorMenuItems.Add(menuItem);
             }
 
             var baseThemeRootMenuItem = new MenuItem(baseThemeMenuItems) { MenuItemText = "Base Theme" };
-            var accentColourRootMenuItem = new MenuItem(accentColourMenuItems) { MenuItemText = "Accent Colour" };
 
-            MenuItems.AddRange(new[] { baseThemeRootMenuItem, accentColourRootMenuItem });
+            MenuItem accentColorRootMenuItem = null;
+
+            var currentCulture = CultureInfo.CurrentCulture;
+
+            if(currentCulture.Name == "en-US")
+            {
+                accentColorRootMenuItem = new MenuItem(accentColorMenuItems) { MenuItemText = "Accent Color" };
+            } else {
+                accentColorRootMenuItem = new MenuItem(accentColorMenuItems) { MenuItemText = "Accent Colour" };
+            }
+
+            MenuItems.AddRange(new[] { baseThemeRootMenuItem, accentColorRootMenuItem });
         }
 
-        private void ChangeTheme(AppTheme baseColour, Accent accentColour)
+        private void ChangeTheme(AppTheme baseColor, Accent accentColor)
         {
             // change the theme for the main window so the update is immediate
-            ThemeManager.ChangeAppStyle(Application.Current.MainWindow, accentColour, baseColour);
+            ThemeManager.ChangeAppStyle(Application.Current.MainWindow, accentColor, baseColor);
 
             // change the default theme for all future windows opened
-            ThemeManager.ChangeAppStyle(Application.Current, accentColour, baseColour);
+            ThemeManager.ChangeAppStyle(Application.Current, accentColor, baseColor);
         }
 
         private void SettingsOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             // make sure we check which theme options are currently selected
-            if (e.PropertyName == nameof(Settings.Default.MetroThemeAccentColour))
+            if (e.PropertyName == nameof(Settings.Default.MetroThemeAccentColor))
             {
-                accentColourMenuItems.ForEach(x => x.IsChecked = false);
-                var menuItem = accentColourMenuItems.FirstOrDefault(x => string.Equals(x.MenuItemText, Settings.Default.MetroThemeAccentColour.ToString()));
+                accentColorMenuItems.ForEach(x => x.IsChecked = false);
+                var menuItem = accentColorMenuItems.FirstOrDefault(x => string.Equals(x.MenuItemText, Settings.Default.MetroThemeAccentColor.ToString()));
 
                 if (menuItem != null)
                 {
                     menuItem.IsChecked = true;
                 }
             }
-            else if (e.PropertyName == nameof(Settings.Default.MetroThemeBaseColour))
+            else if (e.PropertyName == nameof(Settings.Default.MetroThemeBaseColor))
             {
                 baseThemeMenuItems.ForEach(x => x.IsChecked = false);
-                var menuItem = baseThemeMenuItems.FirstOrDefault(x => string.Equals(x.MenuItemText.ReverseFriendlyString(), Settings.Default.MetroThemeBaseColour.ToString()));
+                var menuItem = baseThemeMenuItems.FirstOrDefault(x => string.Equals(x.MenuItemText.ReverseFriendlyString(), Settings.Default.MetroThemeBaseColor.ToString()));
 
                 if (menuItem != null)
                 {

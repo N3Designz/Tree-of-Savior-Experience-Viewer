@@ -1,6 +1,6 @@
 namespace TOSExpViewer.Core
 {
-    public enum MetroThemeBaseColour
+    public enum MetroThemeBaseColor
     {
         BaseLight,
         BaseDark

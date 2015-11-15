@@ -1,6 +1,6 @@
 namespace TOSExpViewer.Core
 {
-    public enum MetroThemeAccentColour
+    public enum MetroThemeAccentColor
     {
         Red,
         Green,

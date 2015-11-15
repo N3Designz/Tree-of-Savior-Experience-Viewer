@@ -8,10 +8,10 @@
     <Setting Name="Left" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="MetroThemeBaseColour" Type="System.String" Scope="User">
+    <Setting Name="MetroThemeBaseColor" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="MetroThemeAccentColour" Type="System.String" Scope="User">
+    <Setting Name="MetroThemeAccentColor" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="HideCurrentBaseExperience" Type="System.Boolean" Scope="User">

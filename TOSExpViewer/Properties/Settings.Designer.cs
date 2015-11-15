@@ -50,24 +50,24 @@ namespace TOSExpViewer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string MetroThemeBaseColour {
+        public string MetroThemeBaseColor {
             get {
-                return ((string)(this["MetroThemeBaseColour"]));
+                return ((string)(this["MetroThemeBaseColor"]));
             }
             set {
-                this["MetroThemeBaseColour"] = value;
+                this["MetroThemeBaseColor"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string MetroThemeAccentColour {
+        public string MetroThemeAccentColor {
             get {
-                return ((string)(this["MetroThemeAccentColour"]));
+                return ((string)(this["MetroThemeAccentColor"]));
             }
             set {
-                this["MetroThemeAccentColour"] = value;
+                this["MetroThemeAccentColor"] = value;
             }
         }
         

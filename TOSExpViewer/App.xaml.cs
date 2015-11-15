@@ -14,42 +14,42 @@ namespace TOSExpViewer
         protected override void OnStartup(StartupEventArgs e)
         {
             // Load the theme set by the user
-            string accentColour = GetAccentColour();
-            string baseColour = GetBaseThemeColour();
+            string accentColor = GetAccentColor();
+            string baseColor = GetBaseThemeColor();
 
-            ThemeManager.ChangeAppStyle(Current, ThemeManager.GetAccent(accentColour), ThemeManager.GetAppTheme(baseColour));
+            ThemeManager.ChangeAppStyle(Current, ThemeManager.GetAccent(accentColor), ThemeManager.GetAppTheme(baseColor));
 
             base.OnStartup(e);
         }
 
-        private string GetAccentColour()
+        private string GetAccentColor()
         {
-            string accentColour = Settings.Default.MetroThemeAccentColour;
+            string accentColor = Settings.Default.MetroThemeAccentColor;
 
-            if (!Enum.IsDefined(typeof(MetroThemeAccentColour), accentColour))
+            if (!Enum.IsDefined(typeof(MetroThemeAccentColor), accentColor))
             {
                 // set safe default
-                accentColour = MetroThemeAccentColour.Blue.ToString();
-                Settings.Default.MetroThemeAccentColour = accentColour;
+                accentColor = MetroThemeAccentColor.Blue.ToString();
+                Settings.Default.MetroThemeAccentColor = accentColor;
                 Settings.Default.Save();
             }
 
-            return accentColour;
+            return accentColor;
         }
 
-        private string GetBaseThemeColour()
+        private string GetBaseThemeColor()
         {
-            string baseColour = Settings.Default.MetroThemeBaseColour;
+            string baseColor = Settings.Default.MetroThemeBaseColor;
 
-            if (!Enum.IsDefined(typeof(MetroThemeBaseColour), baseColour))
+            if (!Enum.IsDefined(typeof(MetroThemeBaseColor), baseColor))
             {
                 // set safe default
-                baseColour = MetroThemeBaseColour.BaseLight.ToString();
-                Settings.Default.MetroThemeBaseColour = baseColour;
+                baseColor = MetroThemeBaseColor.BaseLight.ToString();
+                Settings.Default.MetroThemeBaseColor = baseColor;
                 Settings.Default.Save();
             }
 
-            return baseColour;
+            return baseColor;
         }
     }
 }
