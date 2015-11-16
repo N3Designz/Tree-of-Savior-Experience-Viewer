@@ -230,7 +230,7 @@ namespace TOSExpViewer.ViewModels
                 ExperienceData.GainedBaseExperience += ExperienceData.LastExperienceGain;
             }
 
-            ExperienceData.ExperiencePerHour = ExperienceData.GainedBaseExperience * (int)(TimeSpan.FromHours(1).TotalMilliseconds / ExperienceData.ElapsedTime.TotalMilliseconds);
+            ExperienceData.ExperiencePerHour = (int) (ExperienceData.GainedBaseExperience * (TimeSpan.FromHours(1).TotalMilliseconds / ExperienceData.ElapsedTime.TotalMilliseconds));
 
             ExperienceData.TimeToLevel = CalculateTimeToLevel(ExperienceData);
 
