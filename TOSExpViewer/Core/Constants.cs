@@ -1,4 +1,6 @@
-﻿namespace TOSExpViewer.Core
+﻿using System;
+
+namespace TOSExpViewer.Core
 {
     public class Constants
     {
@@ -21,7 +23,7 @@
         {
             if(rank < 1 || rank > 10 || classLevel < 1 || classLevel > 14)
             {
-                return 0;
+                throw new ArgumentOutOfRangeException("You must use a rank between 1 and 10 and a class level between 1 and 14");
             }
 
             return REQUIRED_CLASS_EXPERIENCE[rank - 1, classLevel - 1];
