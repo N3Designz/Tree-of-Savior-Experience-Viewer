@@ -19,7 +19,7 @@ namespace TOSExpViewer.Core
             { 2689951, 12359771, 30158602, 56790596, 92785144, 138572544, 194518144, 260941056, 338125536, 426328576, 525785184, 636712192, 759311232, 893770752 }
         };
 
-        public static int getRequiredClassExperience(int rank, int classLevel)
+        public static int GetRequiredClassExperience(int rank, int classLevel)
         {
             if(rank < 1 || rank > 10 || classLevel < 1 || classLevel > 14)
             {
