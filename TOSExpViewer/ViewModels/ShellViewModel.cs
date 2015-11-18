@@ -28,6 +28,17 @@ namespace TOSExpViewer.ViewModels
                 throw new InvalidOperationException("Constructor only accessible from design time");
 
             Attached = true;
+            ExperienceComponents = new BindableCollection<IExperienceControl>(new[]
+            {
+                new ExperienceControl<ExperienceData>(9123.ToString()) { DisplayName = "Current Exp"},
+                new ExperienceControl<ExperienceData>(91.23.ToString("N4")) { DisplayName = "Required Exp"},
+                new ExperienceControl<ExperienceData>(1754.ToString("N0")) { DisplayName = "Current Exp %"},
+                new ExperienceControl<ExperienceData>(112.ToString("N0")) { DisplayName = "Last Exp Gain"},
+                new ExperienceControl<ExperienceData>(0.0112.ToString("N4")) { DisplayName = "Last Exp Gain %"},
+                new ExperienceControl<ExperienceData>(8.ToString("N0")) { DisplayName = "Kills TNL"},
+                new ExperienceControl<ExperienceData>(1754.ToString("N0")) { DisplayName = "Exp/Hr"},
+                new ExperienceControl<ExperienceData>("~30m") { DisplayName = "Time TNL"},
+            });
         }
 
         public ShellViewModel(

@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:core="clr-namespace:TOSExpViewer.Core"
     xmlns:viewModels="clr-namespace:TOSExpViewer.ViewModels"
+    xmlns:model="clr-namespace:TOSExpViewer.Model"
     mc:Ignorable="d"
     ResizeMode="CanMinimize"
     d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel, IsDesignTimeCreatable=True}"
@@ -24,7 +25,7 @@
             <Setter Property="Margin" Value="7,0" />
         </Style>
         
-        <DataTemplate x:Key="ExperienceComponentTemplate" DataType="experienceControls:ExperienceControl">
+        <DataTemplate x:Key="ExperienceComponentTemplate" DataType="model:IExperienceControl">
             <StackPanel Visibility="{Binding Show, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <StackPanel.ContextMenu>
                     <ContextMenu>
