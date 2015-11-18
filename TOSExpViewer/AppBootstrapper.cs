@@ -4,7 +4,6 @@ using System.Windows;
 using Caliburn.Micro;
 using TOSExpViewer.Core;
 using TOSExpViewer.Model;
-using TOSExpViewer.Model.ExperienceControls;
 using TOSExpViewer.Properties;
 using TOSExpViewer.ViewModels;
 
@@ -28,26 +27,85 @@ namespace TOSExpViewer
             container.Singleton<ExperienceData>();
 
             var experienceData = container.GetInstance<ExperienceData>();
-            var experienceControls = new ExperienceControl[]
-            {
-                new CurrentBaseExperienceControl(experienceData),
-                new RequiredBaseExperienceControl(experienceData),
-                new CurrentBaseExperiencePercentControl(experienceData),
-                new LastExperienceGainControl(experienceData),
-                new LastExperienceGainPercentControl(experienceData),
-                new KillsTilNextLevelControl(experienceData),
-                new ExperiencePerHourControl(experienceData),
-                new TimeToLevelControl(experienceData),
-            };
+            var experienceControls = GetExperienceControls(experienceData);
 
-            container.Handler<ShellViewModel>(simpleContainer =>
-                                              new ShellViewModel(
-                                                  container.GetInstance<SettingsViewModel>(),
-                                                  experienceData,
-                                                  experienceControls)
-                );
+            container.Handler<ShellViewModel>(simpleContainer => new ShellViewModel(
+                                                                     container.GetInstance<SettingsViewModel>(),
+                                                                     experienceData,
+                                                                     experienceControls));
 
             container.Handler<SettingsViewModel>(simpleContainer => new SettingsViewModel(experienceControls));
+        }
+
+        private IExperienceControl[] GetExperienceControls(ExperienceData experienceData)
+        {
+            return new IExperienceControl[]
+            {
+                new ExperienceControl<ExperienceData>(
+                    settings => settings.HideCurrentBaseExperience,
+                    experienceData,
+                    data => data.CurrentBaseExperience.ToString("N0"))
+                {
+                    DisplayName = "Current Exp",
+                    HideComponentText = "Hide Current Experience"
+                },
+                new ExperienceControl<ExperienceData>(
+                    settings => settings.HideRequiredBaseExperience,
+                    experienceData,
+                    data => data.RequiredBaseExperience.ToString("N0"))
+                {
+                    DisplayName = "Required Exp",
+                    HideComponentText = "Hide Required Exp"
+                },
+                new ExperienceControl<ExperienceData>(
+                    settings => settings.HideCurrentBaseExperencePercent,
+                    experienceData,
+                    data => data.CurrentBaseExperiencePercent.ToString("N4"))
+                {
+                    DisplayName = "Current Exp %",
+                    HideComponentText = "Hide Current Experience %"
+                },
+                new ExperienceControl<ExperienceData>(
+                    settings => settings.HideLastExperienceGain,
+                    experienceData,
+                    data => data.LastExperienceGain.ToString("N0"))
+                {
+                    DisplayName = "Last Exp Gain",
+                    HideComponentText = "Hide Last Exp Gain"
+                },
+                new ExperienceControl<ExperienceData>(
+                    settings => settings.HideLastExperienceGainPercent,
+                    experienceData,
+                    data => data.LastExperienceGainPercent.ToString("N4"))
+                {
+                    DisplayName = "Last Exp Gain %",
+                    HideComponentText = "Hide Last Exp Gain %"
+                },
+                new ExperienceControl<ExperienceData>(
+                    settings => settings.HideKillsTilNextLevel,
+                    experienceData,
+                    data => data.KillsTilNextLevel.ToString("N0"))
+                {
+                    DisplayName = "Kills TNL",
+                    HideComponentText = "Hide Kills TNL"
+                },
+                new ExperienceControl<ExperienceData>(
+                    settings => settings.HideExperiencePerHour,
+                    experienceData,
+                    data => data.ExperiencePerHour.ToString("N0"))
+                {
+                    DisplayName = "Exp/Hr",
+                    HideComponentText = "Hide Exp/Hr"
+                },
+                new ExperienceControl<ExperienceData>(
+                    settings => settings.HideTimeToLevel,
+                    experienceData,
+                    data => data.TimeToLevel)
+                {
+                    DisplayName = "Time TNL",
+                    HideComponentText = "Hide Time TNL"
+                },
+            };
         }
 
         protected override object GetInstance(Type service, string key)

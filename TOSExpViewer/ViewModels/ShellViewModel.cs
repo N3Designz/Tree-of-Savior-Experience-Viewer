@@ -9,7 +9,6 @@ using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using TOSExpViewer.Core;
 using TOSExpViewer.Model;
-using TOSExpViewer.Model.ExperienceControls;
 using TOSExpViewer.Service;
 
 namespace TOSExpViewer.ViewModels
@@ -29,23 +28,12 @@ namespace TOSExpViewer.ViewModels
                 throw new InvalidOperationException("Constructor only accessible from design time");
 
             Attached = true;
-            ExperienceComponents = new BindableCollection<ExperienceControl>(new ExperienceControl[]
-            {
-                new CurrentBaseExperienceControl(),
-                new RequiredBaseExperienceControl(), 
-                new CurrentBaseExperiencePercentControl(), 
-                new LastExperienceGainControl(), 
-                new LastExperienceGainPercentControl(), 
-                new KillsTilNextLevelControl(), 
-                new ExperiencePerHourControl(), 
-                new TimeToLevelControl(), 
-            });
         }
 
         public ShellViewModel(
             SettingsViewModel settingsViewModelViewModel,
             ExperienceData experienceData,
-            ExperienceControl[] experienceControls)
+            IExperienceControl[] experienceControls)
         {
             if (settingsViewModelViewModel == null)
             {
@@ -66,7 +54,7 @@ namespace TOSExpViewer.ViewModels
             ExperienceData = experienceData;
             SettingsViewModel.ActivateWith(this);
             experienceDataToTextService = new ExperienceDataToTextService(); // must not be initialized in design time
-            ExperienceComponents = new BindableCollection<ExperienceControl>(experienceControls);
+            ExperienceComponents = new BindableCollection<IExperienceControl>(experienceControls);
 
             timer.Tick += TimerOnTick;
         }
@@ -75,7 +63,7 @@ namespace TOSExpViewer.ViewModels
 
         public ExperienceData ExperienceData { get; }
 
-        public BindableCollection<ExperienceControl> ExperienceComponents { get; set; }
+        public BindableCollection<IExperienceControl> ExperienceComponents { get; set; }
 
         public SettingsViewModel SettingsViewModel { get; set; }
 

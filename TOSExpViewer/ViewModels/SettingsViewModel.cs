@@ -7,7 +7,6 @@ using Caliburn.Micro;
 using MahApps.Metro;
 using TOSExpViewer.Core;
 using TOSExpViewer.Model;
-using TOSExpViewer.Model.ExperienceControls;
 using TOSExpViewer.Properties;
 using Action = System.Action;
 using System.Globalization;
@@ -28,8 +27,13 @@ namespace TOSExpViewer.ViewModels
             InitializeMenuItems();
         }
 
-        public SettingsViewModel(ExperienceControl[] experienceControls)
+        public SettingsViewModel(IExperienceControl[] experienceControls)
         {
+            if (experienceControls == null)
+            {
+                throw new ArgumentNullException(nameof(experienceControls));
+            }
+
             var experienceControlMenuItems = experienceControls.Select(x =>
             {
                 var menuItem = new MenuItem(() => x.Show = !x.Show)

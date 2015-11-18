@@ -8,7 +8,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:core="clr-namespace:TOSExpViewer.Core"
     xmlns:viewModels="clr-namespace:TOSExpViewer.ViewModels"
-    xmlns:experienceControls="clr-namespace:TOSExpViewer.Model.ExperienceControls"
     mc:Ignorable="d"
     ResizeMode="CanMinimize"
     d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel, IsDesignTimeCreatable=True}"
