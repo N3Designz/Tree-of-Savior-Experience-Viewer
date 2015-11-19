@@ -2,9 +2,6 @@
 {
     public class ExperienceContainer
     {
-        private ExperienceData experienceData;
-        private IExperienceControl[] experienceControls;
-
         public ExperienceContainer(ExperienceData experienceData, IExperienceControl[] experienceControls)
         {
             ExperienceData = experienceData;

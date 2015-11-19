@@ -173,6 +173,7 @@ namespace TOSExpViewer.ViewModels
             {
                 if (!tosMonitor.Attached)
                 {
+                    // TODO: fix all of the resets
                     Reset();
 
                     foreach(ExperienceContainer experienceContainer in ExperienceContainers)
