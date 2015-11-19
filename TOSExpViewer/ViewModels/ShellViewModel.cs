@@ -38,6 +38,7 @@ namespace TOSExpViewer.ViewModels
                 new ExperienceControl<ExperienceData>(8.ToString("N0")) { DisplayName = "Kills TNL"},
                 new ExperienceControl<ExperienceData>(1754.ToString("N0")) { DisplayName = "Exp/Hr"},
                 new ExperienceControl<ExperienceData>("~30m") { DisplayName = "Time TNL"},
+                new ExperienceControl<ExperienceData>("1h 30m") { DisplayName = "Run Time"},
             });
         }
 
@@ -115,6 +116,7 @@ namespace TOSExpViewer.ViewModels
 
         public void Reset()
         {
+            // we don't want to reset all exp data values, just the current session values
             ExperienceData.GainedBaseExperience = 0;
             ExperienceData.StartTime = DateTime.Now;
             ExperienceData.TimeToLevel = CalculateTimeToLevel(ExperienceData);
@@ -228,10 +230,12 @@ namespace TOSExpViewer.ViewModels
                 ExperienceData.CurrentBaseExperience = newCurrentBaseExperience;
                 ExperienceData.GainedBaseExperience += ExperienceData.LastExperienceGain;
             }
-
+            
             ExperienceData.ExperiencePerHour = (int) (ExperienceData.GainedBaseExperience * (TimeSpan.FromHours(1).TotalMilliseconds / ExperienceData.ElapsedTime.TotalMilliseconds));
 
             ExperienceData.TimeToLevel = CalculateTimeToLevel(ExperienceData);
+            // make sure the elapsed time is kept updated every tick, must be called from experience data class
+            ExperienceData.NotifyOfPropertyChange(() => ExperienceData.ElapsedTime);
 
             experienceDataToTextService.writeToFile(ExperienceData);
         }
@@ -253,22 +257,7 @@ namespace TOSExpViewer.ViewModels
 
             var estimatedTimeToLevel = TimeSpan.FromSeconds(totalExperienceRequired / experiencePerSecond);
 
-            if (estimatedTimeToLevel >= TimeSpan.FromDays(1) || estimatedTimeToLevel < TimeSpan.Zero)
-            {
-                return Constants.INFINITY;
-            }
-
-            if (estimatedTimeToLevel >= TimeSpan.FromHours(1))
-            {
-                return $"{estimatedTimeToLevel.Hours:00}h {estimatedTimeToLevel.Minutes:00}m";
-            }
-
-            if (estimatedTimeToLevel >= TimeSpan.FromMinutes(1))
-            {
-                return $"~{estimatedTimeToLevel.Minutes}m";
-            }
-
-            return $"~{estimatedTimeToLevel.Seconds}s";
+            return estimatedTimeToLevel.ToShortDisplayFormat();
         }
 
         private async Task ValidateConfiguration()

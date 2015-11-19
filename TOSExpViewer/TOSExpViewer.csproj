@@ -90,7 +90,7 @@
     <Compile Include="Core\Constants.cs" />
     <Compile Include="Core\MetroThemeBaseColour.cs" />
     <Compile Include="Core\MetroThemeColours.cs" />
-    <Compile Include="Core\StringExtensions.cs" />
+    <Compile Include="Core\Extensions.cs" />
     <Compile Include="Core\WindowSettingsBuilder.cs" />
     <Compile Include="Model\IExperienceControl.cs" />
     <Compile Include="Model\ExperienceData.cs" />
@@ -129,7 +129,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\ShellView.xaml">

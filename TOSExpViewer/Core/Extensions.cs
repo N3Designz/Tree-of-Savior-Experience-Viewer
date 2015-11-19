@@ -1,9 +1,10 @@
 using System;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 
 namespace TOSExpViewer.Core
 {
-    public static class StringExtensions
+    public static class Extensions
     {
         /// <summary>
         /// Returns spaced output for a Pascal cased string value
@@ -29,6 +30,27 @@ namespace TOSExpViewer.Core
         public static bool IsEqualTo(this string original, string value, StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
         {
             return String.Compare(original, value, stringComparison) == 0;
+        }
+
+        /// <summary> Formats a timespan into a shortened output showing hours & minutes, minutes or seconds. </summary>
+        public static string ToShortDisplayFormat(this TimeSpan timeSpan)
+        {
+            if (timeSpan >= TimeSpan.FromDays(1) || timeSpan < TimeSpan.Zero)
+            {
+                return Constants.INFINITY;
+            }
+
+            if (timeSpan >= TimeSpan.FromHours(1))
+            {
+                return $"{timeSpan.Hours:00}h {timeSpan.Minutes:00}m";
+            }
+
+            if (timeSpan >= TimeSpan.FromMinutes(1))
+            {
+                return $"{timeSpan.Minutes}m";
+            }
+
+            return $"{timeSpan.Seconds}s";
         }
     }
 }
