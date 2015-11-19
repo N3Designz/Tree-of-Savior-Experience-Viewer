@@ -52,7 +52,12 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <ItemsControl Grid.Row="0" Grid.Column="0" ItemsSource="{Binding ExperienceComponents}" ItemTemplate="{StaticResource ExperienceComponentTemplate}"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <ItemsControl Grid.Row="0" Grid.Column="0" ItemsSource="{Binding BaseExperienceComponents}" ItemTemplate="{StaticResource ExperienceComponentTemplate}"
                           Visibility="{Binding Attached, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -60,8 +65,17 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
-            
-            <Button Grid.Row="0" Grid.Column="1" x:Name="Reset" Content="RESET"
+
+            <ItemsControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding ClassExperienceComponents}" ItemTemplate="{StaticResource ExperienceComponentTemplate}"
+                          Visibility="{Binding Attached, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+
+            <Button Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="Reset" Content="RESET"
                 ToolTip="Resets the exp per hour/time to level values"
                 Visibility="{Binding ShowResetButton, Converter={StaticResource BooleanToVisibilityConverter}}" />
 

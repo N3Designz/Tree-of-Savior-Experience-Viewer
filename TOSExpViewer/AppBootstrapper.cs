@@ -24,14 +24,15 @@ namespace TOSExpViewer
 
             container.Singleton<IWindowManager, WindowManager>();
             container.Singleton<IEventAggregator, EventAggregator>();
-            container.Singleton<ExperienceData>();
+            container.Singleton<ExperienceData>("baseExperienceData");
+            container.Singleton<ExperienceData>("classExperienceData");
 
-            var experienceData = container.GetInstance<ExperienceData>();
-            var experienceControls = GetExperienceControls(experienceData);
+            var baseExperienceData = container.GetInstance<ExperienceData>();
+            var experienceControls = GetExperienceControls(baseExperienceData);
 
             container.Handler<ShellViewModel>(simpleContainer => new ShellViewModel(
                                                                      container.GetInstance<SettingsViewModel>(),
-                                                                     experienceData,
+                                                                     baseExperienceData,
                                                                      experienceControls));
 
             container.Handler<SettingsViewModel>(simpleContainer => new SettingsViewModel(experienceControls));

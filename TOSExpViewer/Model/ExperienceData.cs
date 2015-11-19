@@ -14,6 +14,8 @@ namespace TOSExpViewer.Model
         private string timeToLevel;
         private DateTime startTime;
 
+        public bool FirstUpdate { get; set; }
+
         public int CurrentBaseExperience
         {
             get { return currentBaseExperience; }

@@ -7,7 +7,6 @@ using System.Windows.Threading;
 using Caliburn.Micro;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using TOSExpViewer.Core;
 using TOSExpViewer.Model;
 using TOSExpViewer.Service;
 
@@ -16,9 +15,9 @@ namespace TOSExpViewer.ViewModels
     public class ShellViewModel : Screen
     {
         private readonly DispatcherTimer timer = new DispatcherTimer();
-        private readonly ExperienceDataToTextService experienceDataToTextService;
+        private readonly ExperienceUpdateService experienceUpdateService;
+        
         private TosMonitor tosMonitor;
-        private bool firstUpdate = true;
         private bool attached;
         private bool showTitleBar = true;
 
@@ -28,7 +27,7 @@ namespace TOSExpViewer.ViewModels
                 throw new InvalidOperationException("Constructor only accessible from design time");
 
             Attached = true;
-            ExperienceComponents = new BindableCollection<IExperienceControl>(new[]
+            BaseExperienceComponents = new BindableCollection<IExperienceControl>(new[]
             {
                 new ExperienceControl<ExperienceData>(9123.ToString()) { DisplayName = "Current Exp"},
                 new ExperienceControl<ExperienceData>(91.23.ToString("N4")) { DisplayName = "Required Exp"},
@@ -40,12 +39,22 @@ namespace TOSExpViewer.ViewModels
                 new ExperienceControl<ExperienceData>("~30m") { DisplayName = "Time TNL"},
                 new ExperienceControl<ExperienceData>("1h 30m") { DisplayName = "Run Time"},
             });
+            
+            ClassExperienceComponents = new BindableCollection<IExperienceControl>(new[]
+            {
+                new ExperienceControl<ExperienceData>(9123.ToString()) { DisplayName = ""},
+                new ExperienceControl<ExperienceData>(91.23.ToString("N4")) { DisplayName = ""},
+                new ExperienceControl<ExperienceData>(1754.ToString("N0")) { DisplayName = ""},
+                new ExperienceControl<ExperienceData>(112.ToString("N0")) { DisplayName = ""},
+                new ExperienceControl<ExperienceData>(0.0112.ToString("N4")) { DisplayName = ""},
+                new ExperienceControl<ExperienceData>(8.ToString("N0")) { DisplayName = ""},
+                new ExperienceControl<ExperienceData>(1754.ToString("N0")) { DisplayName = ""},
+                new ExperienceControl<ExperienceData>("~30m") { DisplayName = ""},
+                new ExperienceControl<ExperienceData>("1h 30m") { DisplayName = ""},
+            });
         }
 
-        public ShellViewModel(
-            SettingsViewModel settingsViewModelViewModel,
-            ExperienceData experienceData,
-            IExperienceControl[] experienceControls)
+        public ShellViewModel(SettingsViewModel settingsViewModelViewModel, ExperienceData experienceData, IExperienceControl[] experienceControls)
         {
             if (settingsViewModelViewModel == null)
             {
@@ -63,19 +72,22 @@ namespace TOSExpViewer.ViewModels
             }
 
             SettingsViewModel = settingsViewModelViewModel;
-            ExperienceData = experienceData;
+            BaseExperienceData = experienceData;
             SettingsViewModel.ActivateWith(this);
-            experienceDataToTextService = new ExperienceDataToTextService(); // must not be initialized in design time
-            ExperienceComponents = new BindableCollection<IExperienceControl>(experienceControls);
+            experienceUpdateService = new ExperienceUpdateService();
+            BaseExperienceComponents = new BindableCollection<IExperienceControl>(experienceControls);
+            ClassExperienceComponents = new BindableCollection<IExperienceControl>(experienceControls);
 
             timer.Tick += TimerOnTick;
         }
 
         public override string DisplayName { get; set; } = "Tree of Savior Experience Viewer";
 
-        public ExperienceData ExperienceData { get; }
+        public ExperienceData BaseExperienceData { get; }
+        public ExperienceData ClassExperienceData { get; }
 
-        public BindableCollection<IExperienceControl> ExperienceComponents { get; set; }
+        public BindableCollection<IExperienceControl> BaseExperienceComponents { get; set; }
+        public BindableCollection<IExperienceControl> ClassExperienceComponents { get; set; }
 
         public SettingsViewModel SettingsViewModel { get; set; }
 
@@ -113,15 +125,6 @@ namespace TOSExpViewer.ViewModels
         public bool ShowResetButton => Attached &&
                                        (!Properties.Settings.Default.HideExperiencePerHour ||
                                        !Properties.Settings.Default.HideTimeToLevel);
-
-        public void Reset()
-        {
-            // we don't want to reset all exp data values, just the current session values
-            ExperienceData.GainedBaseExperience = 0;
-            ExperienceData.StartTime = DateTime.Now;
-            ExperienceData.TimeToLevel = CalculateTimeToLevel(ExperienceData);
-            NotifyOfPropertyChange(() => ExperienceData.ExperiencePerHour);
-        }
 
         public void InterceptWindowDoubleClick(MouseButtonEventArgs args)
         {
@@ -175,9 +178,9 @@ namespace TOSExpViewer.ViewModels
             {
                 if (!tosMonitor.Attached)
                 {
-                    Reset();
-                    ExperienceData.Reset();
-                    firstUpdate = true;
+                    experienceUpdateService.Reset(BaseExperienceData);
+                    BaseExperienceData.Reset();
+                    BaseExperienceData.FirstUpdate = true;
                     tosMonitor.Attach();
                 }
 
@@ -186,78 +189,12 @@ namespace TOSExpViewer.ViewModels
                     return; // escape out, the client probably isn't running
                 }
 
-                UpdateExperienceValues();
+                experienceUpdateService.UpdateExperienceValues(BaseExperienceData, tosMonitor.GetCurrentBaseExperience(), tosMonitor.GetRequiredExperience());
             }
             catch (Exception ex)
             {
                 (GetView() as MetroWindow).ShowMessageAsync("Error", ex.Message);
             }
-        }
-
-        private void UpdateExperienceValues()
-        {
-            var newCurrentBaseExperience = tosMonitor.GetCurrentBaseExperience();
-            var requiredBasedExp = tosMonitor.GetRequiredExperience();
-
-            if (newCurrentBaseExperience == int.MinValue || requiredBasedExp == int.MinValue ||
-                requiredBasedExp == 15) // for some reason required base exp returns as 15 when char not selected, no idea why
-            {
-                Reset();
-                ExperienceData.Reset();
-                return;
-            }
-
-            ExperienceData.RequiredBaseExperience = requiredBasedExp;
-
-            if (firstUpdate)
-            {
-                ExperienceData.PreviousRequiredBaseExperience = requiredBasedExp;
-                ExperienceData.CurrentBaseExperience = newCurrentBaseExperience;
-                firstUpdate = false;
-            }
-            else if (newCurrentBaseExperience != ExperienceData.CurrentBaseExperience) // exp hasn't changed, nothing else to do
-            {
-                if (ExperienceData.RequiredBaseExperience > ExperienceData.PreviousRequiredBaseExperience) // handle level up scenarios
-                {
-                    ExperienceData.LastExperienceGain = (ExperienceData.PreviousRequiredBaseExperience - ExperienceData.CurrentBaseExperience) + newCurrentBaseExperience;
-                    ExperienceData.PreviousRequiredBaseExperience = requiredBasedExp;
-                }
-                else
-                {
-                    ExperienceData.LastExperienceGain = newCurrentBaseExperience - ExperienceData.CurrentBaseExperience;
-                }
-
-                ExperienceData.CurrentBaseExperience = newCurrentBaseExperience;
-                ExperienceData.GainedBaseExperience += ExperienceData.LastExperienceGain;
-            }
-            
-            ExperienceData.ExperiencePerHour = (int) (ExperienceData.GainedBaseExperience * (TimeSpan.FromHours(1).TotalMilliseconds / ExperienceData.ElapsedTime.TotalMilliseconds));
-
-            ExperienceData.TimeToLevel = CalculateTimeToLevel(ExperienceData);
-            // make sure the elapsed time is kept updated every tick, must be called from experience data class
-            ExperienceData.NotifyOfPropertyChange(() => ExperienceData.ElapsedTime);
-
-            experienceDataToTextService.writeToFile(ExperienceData);
-        }
-
-        private string CalculateTimeToLevel(ExperienceData experienceData)
-        {
-            if (experienceData.LastExperienceGain == 0)
-            {
-                return Constants.INFINITY;
-            }
-
-            var totalExperienceRequired = experienceData.RequiredBaseExperience - experienceData.CurrentBaseExperience;
-            var experiencePerSecond = experienceData.GainedBaseExperience / experienceData.ElapsedTime.TotalSeconds;
-
-            if (experiencePerSecond == 0 || double.IsNaN(experiencePerSecond))
-            {
-                return Constants.INFINITY;
-            }
-
-            var estimatedTimeToLevel = TimeSpan.FromSeconds(totalExperienceRequired / experiencePerSecond);
-
-            return estimatedTimeToLevel.ToShortDisplayFormat();
         }
 
         private async Task ValidateConfiguration()
