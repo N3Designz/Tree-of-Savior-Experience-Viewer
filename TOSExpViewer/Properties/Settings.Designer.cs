@@ -178,5 +178,17 @@ namespace TOSExpViewer.Properties {
                 this["HideLastExperienceGainPercent"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HideSessionTime {
+            get {
+                return ((bool)(this["HideSessionTime"]));
+            }
+            set {
+                this["HideSessionTime"] = value;
+            }
+        }
     }
 }

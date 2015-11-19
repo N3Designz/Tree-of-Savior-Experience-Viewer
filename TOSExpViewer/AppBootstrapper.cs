@@ -44,6 +44,7 @@ namespace TOSExpViewer
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideCurrentBaseExperience,
                     experienceData,
+                    data => data.CurrentBaseExperience,
                     data => data.CurrentBaseExperience.ToString("N0"))
                 {
                     DisplayName = "Current Exp",
@@ -52,6 +53,7 @@ namespace TOSExpViewer
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideRequiredBaseExperience,
                     experienceData,
+                    data => data.RequiredBaseExperience,
                     data => data.RequiredBaseExperience.ToString("N0"))
                 {
                     DisplayName = "Required Exp",
@@ -60,6 +62,7 @@ namespace TOSExpViewer
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideCurrentBaseExperencePercent,
                     experienceData,
+                    data => data.CurrentBaseExperiencePercent,
                     data => data.CurrentBaseExperiencePercent.ToString("N4"))
                 {
                     DisplayName = "Current Exp %",
@@ -68,6 +71,7 @@ namespace TOSExpViewer
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideLastExperienceGain,
                     experienceData,
+                    data => data.LastExperienceGain,
                     data => data.LastExperienceGain.ToString("N0"))
                 {
                     DisplayName = "Last Exp Gain",
@@ -76,6 +80,7 @@ namespace TOSExpViewer
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideLastExperienceGainPercent,
                     experienceData,
+                    data => data.LastExperienceGainPercent,
                     data => data.LastExperienceGainPercent.ToString("N4"))
                 {
                     DisplayName = "Last Exp Gain %",
@@ -84,6 +89,7 @@ namespace TOSExpViewer
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideKillsTilNextLevel,
                     experienceData,
+                    data => data.KillsTilNextLevel,
                     data => data.KillsTilNextLevel.ToString("N0"))
                 {
                     DisplayName = "Kills TNL",
@@ -92,6 +98,7 @@ namespace TOSExpViewer
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideExperiencePerHour,
                     experienceData,
+                    data => data.ExperiencePerHour,
                     data => data.ExperiencePerHour.ToString("N0"))
                 {
                     DisplayName = "Exp/Hr",
@@ -100,11 +107,21 @@ namespace TOSExpViewer
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideTimeToLevel,
                     experienceData,
+                    data => data.TimeToLevel,
                     data => data.TimeToLevel)
                 {
                     DisplayName = "Time TNL",
                     HideComponentText = "Hide Time TNL"
                 },
+                new ExperienceControl<ExperienceData>(
+                    settings => settings.HideSessionTime,
+                    experienceData,
+                    data => data.ElapsedTime,
+                    data => data.ElapsedTime.ToShortDisplayFormat())
+                {
+                    DisplayName = "Session",
+                    HideComponentText = "Hide Session Time"
+                }, 
             };
         }
 

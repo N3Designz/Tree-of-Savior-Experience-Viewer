@@ -12,6 +12,7 @@ namespace TOSExpViewer.Model
         private int gainedBaseExperience;
         private int experiencePerHour;
         private string timeToLevel;
+        private DateTime startTime;
 
         public int CurrentBaseExperience
         {
@@ -102,15 +103,19 @@ namespace TOSExpViewer.Model
             }
         }
 
-        public DateTime StartTime { get; set; }
-
-        public TimeSpan ElapsedTime
+        public DateTime StartTime
         {
-            get
+            get { return startTime; }
+            set
             {
-                return DateTime.Now - StartTime;
+                if (value.Equals(startTime)) return;
+                startTime = value;
+                NotifyOfPropertyChange(() => StartTime);
+                NotifyOfPropertyChange(() => ElapsedTime);
             }
         }
+
+        public TimeSpan ElapsedTime => DateTime.Now - StartTime;
 
         public int ExperiencePerHour
         {
