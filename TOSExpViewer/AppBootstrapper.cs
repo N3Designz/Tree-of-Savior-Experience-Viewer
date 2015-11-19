@@ -27,20 +27,25 @@ namespace TOSExpViewer
             container.Singleton<ExperienceData>("baseExperienceData");
             container.Singleton<ExperienceData>("classExperienceData");
 
-            var baseExperienceData = container.GetInstance<ExperienceData>();
-            var experienceControls = GetExperienceControls(baseExperienceData);
+            ExperienceData baseExperienceData = container.GetInstance<ExperienceData>();
+            IExperienceControl[] baseExperienceControls = GetExperienceControls(baseExperienceData, false);
 
-            container.Handler<ShellViewModel>(simpleContainer => new ShellViewModel(
-                                                                     container.GetInstance<SettingsViewModel>(),
-                                                                     baseExperienceData,
-                                                                     experienceControls));
+            ExperienceData classExperienceData = container.GetInstance<ExperienceData>();
+            IExperienceControl[] classExperienceControls = GetExperienceControls(classExperienceData, false);
 
-            container.Handler<SettingsViewModel>(simpleContainer => new SettingsViewModel(experienceControls));
+            List<ExperienceContainer> experienceContainers = new List<ExperienceContainer>();
+
+            experienceContainers.Add(new ExperienceContainer(baseExperienceData, baseExperienceControls));
+            experienceContainers.Add(new ExperienceContainer(classExperienceData, classExperienceControls));
+
+            container.Handler<ShellViewModel>(simpleContainer => new ShellViewModel(container.GetInstance<SettingsViewModel>(), experienceContainers));
+
+            container.Handler<SettingsViewModel>(simpleContainer => new SettingsViewModel(baseExperienceControls));
         }
 
-        private IExperienceControl[] GetExperienceControls(ExperienceData experienceData)
+        private IExperienceControl[] GetExperienceControls(ExperienceData experienceData, bool hideHeader)
         {
-            return new IExperienceControl[]
+            IExperienceControl[] experienceControls = new IExperienceControl[]
             {
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideCurrentBaseExperience,
@@ -124,6 +129,17 @@ namespace TOSExpViewer
                     HideComponentText = "Hide Session Time"
                 }, 
             };
+
+            // TODO: this doesn't work like I had hoped. figure out a better way to hide the header.
+            if(hideHeader)
+            {
+                foreach(var experienceControl in experienceControls)
+                {
+                    experienceControl.DisplayName = "";
+                }
+            }
+
+            return experienceControls;
         }
 
         protected override object GetInstance(Type service, string key)

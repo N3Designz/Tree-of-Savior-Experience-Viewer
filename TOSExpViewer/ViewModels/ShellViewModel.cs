@@ -9,6 +9,7 @@ using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using TOSExpViewer.Model;
 using TOSExpViewer.Service;
+using System.Collections.Generic;
 
 namespace TOSExpViewer.ViewModels
 {
@@ -21,13 +22,19 @@ namespace TOSExpViewer.ViewModels
         private bool attached;
         private bool showTitleBar = true;
 
+        public override string DisplayName { get; set; } = "Tree of Savior Experience Viewer";
+        public List<ExperienceContainer> ExperienceContainers { get; set; }
+        public BindableCollection<IExperienceControl> BaseExperienceComponents { get; set; }
+        public BindableCollection<IExperienceControl> ClassExperienceComponents { get; set; }
+        public SettingsViewModel SettingsViewModel { get; set; }
+
         public ShellViewModel()
         {
             if (!Execute.InDesignMode)
                 throw new InvalidOperationException("Constructor only accessible from design time");
 
             Attached = true;
-            BaseExperienceComponents = new BindableCollection<IExperienceControl>(new[]
+            var BaseExperienceComponents = new BindableCollection<IExperienceControl>(new[]
             {
                 new ExperienceControl<ExperienceData>(9123.ToString()) { DisplayName = "Current Exp"},
                 new ExperienceControl<ExperienceData>(91.23.ToString("N4")) { DisplayName = "Required Exp"},
@@ -40,7 +47,7 @@ namespace TOSExpViewer.ViewModels
                 new ExperienceControl<ExperienceData>("1h 30m") { DisplayName = "Run Time"},
             });
             
-            ClassExperienceComponents = new BindableCollection<IExperienceControl>(new[]
+            var ClassExperienceComponents = new BindableCollection<IExperienceControl>(new[]
             {
                 new ExperienceControl<ExperienceData>(9123.ToString()) { DisplayName = ""},
                 new ExperienceControl<ExperienceData>(91.23.ToString("N4")) { DisplayName = ""},
@@ -54,42 +61,30 @@ namespace TOSExpViewer.ViewModels
             });
         }
 
-        public ShellViewModel(SettingsViewModel settingsViewModelViewModel, ExperienceData experienceData, IExperienceControl[] experienceControls)
+        public ShellViewModel(SettingsViewModel settingsViewModelViewModel, List<ExperienceContainer> experienceContainers)
         {
             if (settingsViewModelViewModel == null)
             {
                 throw new ArgumentNullException(nameof(settingsViewModelViewModel));
             }
 
-            if (experienceData == null)
+            if (experienceContainers == null)
             {
-                throw new ArgumentNullException(nameof(experienceData));
+                throw new ArgumentNullException(nameof(experienceContainers));
             }
 
-            if (experienceControls == null)
-            {
-                throw new ArgumentNullException(nameof(experienceControls));
-            }
-
+            ExperienceContainers = experienceContainers;
+            
             SettingsViewModel = settingsViewModelViewModel;
-            BaseExperienceData = experienceData;
             SettingsViewModel.ActivateWith(this);
+
             experienceUpdateService = new ExperienceUpdateService();
-            BaseExperienceComponents = new BindableCollection<IExperienceControl>(experienceControls);
-            ClassExperienceComponents = new BindableCollection<IExperienceControl>(experienceControls);
+
+            BaseExperienceComponents = new BindableCollection<IExperienceControl>(ExperienceContainers[0].IExperienceControls);
+            ClassExperienceComponents = new BindableCollection<IExperienceControl>(ExperienceContainers[1].IExperienceControls);
 
             timer.Tick += TimerOnTick;
         }
-
-        public override string DisplayName { get; set; } = "Tree of Savior Experience Viewer";
-
-        public ExperienceData BaseExperienceData { get; }
-        public ExperienceData ClassExperienceData { get; }
-
-        public BindableCollection<IExperienceControl> BaseExperienceComponents { get; set; }
-        public BindableCollection<IExperienceControl> ClassExperienceComponents { get; set; }
-
-        public SettingsViewModel SettingsViewModel { get; set; }
 
         public bool Attached
         {
@@ -178,9 +173,14 @@ namespace TOSExpViewer.ViewModels
             {
                 if (!tosMonitor.Attached)
                 {
-                    experienceUpdateService.Reset(BaseExperienceData);
-                    BaseExperienceData.Reset();
-                    BaseExperienceData.FirstUpdate = true;
+                    Reset();
+
+                    foreach(ExperienceContainer experienceContainer in ExperienceContainers)
+                    {
+                        experienceContainer.ExperienceData.Reset();
+                        experienceContainer.ExperienceData.FirstUpdate = true;
+                    }
+                    
                     tosMonitor.Attach();
                 }
 
@@ -189,7 +189,9 @@ namespace TOSExpViewer.ViewModels
                     return; // escape out, the client probably isn't running
                 }
 
-                experienceUpdateService.UpdateExperienceValues(BaseExperienceData, tosMonitor.GetCurrentBaseExperience(), tosMonitor.GetRequiredExperience());
+                // TODO: come up with clever solution to just iterate over this and call the right type of experience instead
+                experienceUpdateService.UpdateExperienceValues(this.ExperienceContainers[0].ExperienceData, tosMonitor.GetCurrentBaseExperience(), tosMonitor.GetRequiredExperience());
+                experienceUpdateService.UpdateExperienceValues(this.ExperienceContainers[1].ExperienceData, tosMonitor.GetCurrentBaseExperience(), tosMonitor.GetRequiredExperience());
             }
             catch (Exception ex)
             {
@@ -238,6 +240,11 @@ namespace TOSExpViewer.ViewModels
             await (GetView() as MetroWindow).ShowMessageAsync("Configuration File Invalid", errorMessage);
             await Task.Delay(50);
             TryClose();
+        }
+
+        public void Reset()
+        {
+            experienceUpdateService.Reset(ExperienceContainers);
         }
     }
 }

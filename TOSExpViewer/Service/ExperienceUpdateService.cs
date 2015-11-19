@@ -2,6 +2,7 @@
 using TOSExpViewer.Core;
 using TOSExpViewer.Model;
 using Caliburn.Micro;
+using System.Collections.Generic;
 
 namespace TOSExpViewer.Service
 {
@@ -75,7 +76,15 @@ namespace TOSExpViewer.Service
             return estimatedTimeToLevel.ToShortDisplayFormat();
         }
 
-        public void Reset(ExperienceData experienceData)
+        public void Reset(List<ExperienceContainer> experienceContainers)
+        {
+            foreach(ExperienceContainer experienceContainer in experienceContainers)
+            {
+                Reset(experienceContainer.ExperienceData);
+            }
+        }
+
+        private void Reset(ExperienceData experienceData)
         {
             // we don't want to reset all exp data values, just the current session values
             experienceData.GainedBaseExperience = 0;
