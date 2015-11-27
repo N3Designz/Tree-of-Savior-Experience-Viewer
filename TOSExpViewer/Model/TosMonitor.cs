@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Caliburn.Micro;
+using System.Configuration;
 
 namespace TOSExpViewer.Model
 {
@@ -19,6 +20,9 @@ namespace TOSExpViewer.Model
 
         private IntPtr currentBaseExperienceAddress = IntPtr.Zero;
         private IntPtr requredBaseExperienceAddress = IntPtr.Zero; //0x4;
+
+        private IntPtr currentClassExperienceAddress = IntPtr.Zero;
+
         private bool attached;
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -27,14 +31,15 @@ namespace TOSExpViewer.Model
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [Out] byte[] lpBuffer, int dwSize, out int lpNumberOfBytesRead);
 
-        public TosMonitor(int currentBaseExpAddress)
+        public TosMonitor(int currentBaseExpAddress, int currentClassExperienceAddress)
         {
-            if (currentBaseExpAddress <= 0)
+            if (currentBaseExpAddress <= 0 || currentClassExperienceAddress <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(currentBaseExpAddress));
+                throw new ArgumentOutOfRangeException(nameof(currentBaseExpAddress) + " " + nameof(currentClassExperienceAddress));
             }
 
             this.currentBaseExpAddress = currentBaseExpAddress;
+            this.currentClassExperienceAddress = new IntPtr(currentClassExperienceAddress);
         }
 
         public bool Attached
@@ -116,6 +121,22 @@ namespace TOSExpViewer.Model
             }
 
             ReadProcessMemory(processId, requredBaseExperienceAddress, buffer, buffer.Length, out bytesRead);
+            if (bytesRead != 4)
+            {
+                return Int32.MinValue;
+            }
+
+            return BitConverter.ToInt32(buffer, 0);
+        }
+
+        public int GetCurrentClassExperience()
+        {
+            if (!Attached)
+            {
+                return Int32.MinValue;
+            }
+
+            ReadProcessMemory(processId, currentClassExperienceAddress, buffer, buffer.Length, out bytesRead);
             if (bytesRead != 4)
             {
                 return Int32.MinValue;

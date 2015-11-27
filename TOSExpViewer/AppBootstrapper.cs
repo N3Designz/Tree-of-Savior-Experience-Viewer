@@ -27,10 +27,10 @@ namespace TOSExpViewer
             container.Singleton<ExperienceData>("baseExperienceData");
             container.Singleton<ExperienceData>("classExperienceData");
 
-            ExperienceData baseExperienceData = container.GetInstance<ExperienceData>();
+            ExperienceData baseExperienceData = container.GetInstance<ExperienceData>("baseExperienceData");
             IExperienceControl[] baseExperienceControls = GetExperienceControls(baseExperienceData, false);
 
-            ExperienceData classExperienceData = container.GetInstance<ExperienceData>();
+            ExperienceData classExperienceData = container.GetInstance<ExperienceData>("classExperienceData");
             IExperienceControl[] classExperienceControls = GetExperienceControls(classExperienceData, false);
 
             List<ExperienceContainer> experienceContainers = new List<ExperienceContainer>();

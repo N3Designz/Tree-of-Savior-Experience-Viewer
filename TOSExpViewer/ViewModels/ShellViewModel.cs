@@ -10,6 +10,7 @@ using MahApps.Metro.Controls.Dialogs;
 using TOSExpViewer.Model;
 using TOSExpViewer.Service;
 using System.Collections.Generic;
+using TOSExpViewer.Core;
 
 namespace TOSExpViewer.ViewModels
 {
@@ -192,7 +193,7 @@ namespace TOSExpViewer.ViewModels
 
                 // TODO: come up with clever solution to just iterate over this and call the right type of experience instead
                 experienceUpdateService.UpdateExperienceValues(this.ExperienceContainers[0].ExperienceData, tosMonitor.GetCurrentBaseExperience(), tosMonitor.GetRequiredExperience());
-                experienceUpdateService.UpdateExperienceValues(this.ExperienceContainers[1].ExperienceData, tosMonitor.GetCurrentBaseExperience(), tosMonitor.GetRequiredExperience());
+                experienceUpdateService.UpdateExperienceValues(this.ExperienceContainers[1].ExperienceData, Constants.GetCurrentClassExperienceForLevelOnly(tosMonitor.GetCurrentClassExperience(), 4, 14), Constants.GetRequiredClassExperience(4, 14));
             }
             catch (Exception ex)
             {
@@ -209,31 +210,40 @@ namespace TOSExpViewer.ViewModels
                 return;
             }
 
-            int currentExpMemAddress;
-            var currentExpMemAddressValue = ConfigurationManager.AppSettings["CurrentExpMemAddress"];
-            if (string.IsNullOrWhiteSpace(currentExpMemAddressValue))
-            {
-                await ConfigError("CurrentExpMemAddress setting missing from config file");
-                return;
-            }
-
-            // ignore leading 0x to prevent the c# parser from throwing
-            if (currentExpMemAddressValue.StartsWith("0x"))
-                currentExpMemAddressValue = currentExpMemAddressValue.Substring(2);
-
-            if (!int.TryParse(currentExpMemAddressValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out currentExpMemAddress))
-            {
-                await ConfigError("CurrentExpMemAddress setting value not in expected format (expecting a hex value such as 0x01489F10)");
-                return;
-            }
+            int currentExpMemAddress = await parseAddress(ConfigurationManager.AppSettings["CurrentExpMemAddress"]);
+            int currentClassExperienceAddress = await parseAddress(ConfigurationManager.AppSettings["CurrentClassExpMemAddress"]);
 
             timer.Interval = TimeSpan.FromMilliseconds(pollingInterval);
-            tosMonitor = new TosMonitor(currentExpMemAddress);
+            tosMonitor = new TosMonitor(currentExpMemAddress, currentClassExperienceAddress);
             tosMonitor.PropertyChanged += (sender, args) =>
             {
                 if (args.PropertyName == nameof(tosMonitor.Attached)) Attached = tosMonitor.Attached;
             };
             timer.Start();
+        }
+
+        private async Task<int> parseAddress(string address)
+        {
+            int currentExpMemAddress;
+            
+            if (string.IsNullOrWhiteSpace(address))
+            {
+                await ConfigError("CurrentExpMemAddress setting missing from config file");
+                return 0;
+            }
+
+            // ignore leading 0x to prevent the c# parser from throwing
+            if (address.StartsWith("0x")) {
+                address = address.Substring(2);
+            }
+
+            if (!int.TryParse(address, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out currentExpMemAddress))
+            {
+                await ConfigError("CurrentExpMemAddress setting value not in expected format (expecting a hex value such as 0x01489F10)");
+                return 0;
+            }
+
+            return currentExpMemAddress;
         }
 
         private async Task ConfigError(string errorMessage)

@@ -26,7 +26,18 @@ namespace TOSExpViewer.Core
                 throw new ArgumentOutOfRangeException("You must use a rank between 1 and 10 and a class level between 1 and 14");
             }
 
-            return REQUIRED_CLASS_EXPERIENCE[rank - 1, classLevel - 1];
+            return REQUIRED_CLASS_EXPERIENCE[rank - 1, classLevel - 1] - REQUIRED_CLASS_EXPERIENCE[rank - 1, classLevel - 2];
+        }
+
+        public static int GetCurrentClassExperienceForLevelOnly(int currentTotalClassExperience, int rank, int classLevel)
+        {
+            if (rank < 1 || rank > 10 || classLevel < 1 || classLevel > 14)
+            {
+                throw new ArgumentOutOfRangeException("You must use a rank between 1 and 10 and a class level between 1 and 14");
+            }
+
+            // subtract current experience from previous level required experience to get current experience
+            return currentTotalClassExperience - REQUIRED_CLASS_EXPERIENCE[rank - 1, classLevel - 2];
         }
     }
 }
