@@ -26,6 +26,7 @@ namespace TOSExpViewer.Core
                 throw new ArgumentOutOfRangeException("You must use a rank between 1 and 10 and a class level between 1 and 14");
             }
 
+            // TODO: both these methods have index out of bounds error at level 1... add a case for it later!
             return REQUIRED_CLASS_EXPERIENCE[rank - 1, classLevel - 1] - REQUIRED_CLASS_EXPERIENCE[rank - 1, classLevel - 2];
         }
 

@@ -191,9 +191,12 @@ namespace TOSExpViewer.ViewModels
                     return; // escape out, the client probably isn't running
                 }
 
+                int classTier = tosMonitor.GetClassTier();
+                int a = tosMonitor.GetCurrentClassExperienceOffset();
+
                 // TODO: come up with clever solution to just iterate over this and call the right type of experience instead
                 experienceUpdateService.UpdateExperienceValues(this.ExperienceContainers[0].ExperienceData, tosMonitor.GetCurrentBaseExperience(), tosMonitor.GetRequiredExperience());
-                experienceUpdateService.UpdateExperienceValues(this.ExperienceContainers[1].ExperienceData, Constants.GetCurrentClassExperienceForLevelOnly(tosMonitor.GetCurrentClassExperience(), 4, 14), Constants.GetRequiredClassExperience(4, 14));
+                experienceUpdateService.UpdateExperienceValues(this.ExperienceContainers[1].ExperienceData, Constants.GetCurrentClassExperienceForLevelOnly(tosMonitor.GetCurrentClassExperience(), 2, 13), Constants.GetRequiredClassExperience(2, 13));
             }
             catch (Exception ex)
             {
@@ -212,9 +215,10 @@ namespace TOSExpViewer.ViewModels
 
             int currentExpMemAddress = await parseAddress(ConfigurationManager.AppSettings["CurrentExpMemAddress"]);
             int currentClassExperienceAddress = await parseAddress(ConfigurationManager.AppSettings["CurrentClassExpMemAddress"]);
+            int currentClassTierAddress = await parseAddress(ConfigurationManager.AppSettings["CurrentClassTier"]);
 
             timer.Interval = TimeSpan.FromMilliseconds(pollingInterval);
-            tosMonitor = new TosMonitor(currentExpMemAddress, currentClassExperienceAddress);
+            tosMonitor = new TosMonitor(currentExpMemAddress, currentClassExperienceAddress, currentClassTierAddress);
             tosMonitor.PropertyChanged += (sender, args) =>
             {
                 if (args.PropertyName == nameof(tosMonitor.Attached)) Attached = tosMonitor.Attached;

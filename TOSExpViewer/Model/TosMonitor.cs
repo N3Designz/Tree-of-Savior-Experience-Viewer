@@ -16,12 +16,13 @@ namespace TOSExpViewer.Model
         private IntPtr processId = IntPtr.Zero;
 
         private int bytesRead;
-        private byte[] buffer = new byte[4];
 
         private IntPtr currentBaseExperienceAddress = IntPtr.Zero;
         private IntPtr requredBaseExperienceAddress = IntPtr.Zero; //0x4;
 
         private IntPtr currentClassExperienceAddress = IntPtr.Zero;
+
+        private IntPtr currentClassTierAddress = IntPtr.Zero;
 
         private bool attached;
 
@@ -31,7 +32,7 @@ namespace TOSExpViewer.Model
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [Out] byte[] lpBuffer, int dwSize, out int lpNumberOfBytesRead);
 
-        public TosMonitor(int currentBaseExpAddress, int currentClassExperienceAddress)
+        public TosMonitor(int currentBaseExpAddress, int currentClassExperienceAddress, int currentClassTierAddress)
         {
             if (currentBaseExpAddress <= 0 || currentClassExperienceAddress <= 0)
             {
@@ -40,6 +41,7 @@ namespace TOSExpViewer.Model
 
             this.currentBaseExpAddress = currentBaseExpAddress;
             this.currentClassExperienceAddress = new IntPtr(currentClassExperienceAddress);
+            this.currentClassTierAddress = new IntPtr(currentClassTierAddress);
         }
 
         public bool Attached
@@ -97,52 +99,94 @@ namespace TOSExpViewer.Model
             }
         }
 
-        public int GetCurrentBaseExperience()
+        public int getIntAddress(IntPtr address, int bytes)
         {
+            byte[] buffer = new byte[4];
+
             if (!Attached)
             {
                 return Int32.MinValue;
             }
 
-            ReadProcessMemory(processId, currentBaseExperienceAddress, buffer, buffer.Length, out bytesRead);
-            if (bytesRead != 4)
+            bytesRead = 0;
+            ReadProcessMemory(processId, address, buffer, buffer.Length, out bytesRead);
+
+            if (bytesRead != bytes)
+            {
+                return Int32.MinValue;
+            }
+            
+            return BitConverter.ToInt32(buffer, 0);
+        }
+
+        public int getShortAddress(IntPtr address, int bytes)
+        {
+            byte[] buffer = new byte[4];
+
+            if (!Attached)
             {
                 return Int32.MinValue;
             }
 
-            return BitConverter.ToInt32(buffer, 0);
+            bytesRead = 0;
+            ReadProcessMemory(processId, address, buffer, bytes, out bytesRead);
+
+            if (bytesRead != bytes)
+            {
+                return Int32.MinValue;
+            }
+
+
+            return (Int32)(BitConverter.ToInt16(buffer, 0));
+        }
+
+        public int GetCurrentBaseExperience()
+        {
+            return getIntAddress(currentBaseExperienceAddress, 4);
+        }
+
+        public int GetClassTier()
+        {
+            return getShortAddress(currentClassTierAddress, 2) - 1;
         }
 
         public int GetRequiredExperience()
         {
-            if (!Attached)
-            {
-                return Int32.MinValue;
-            }
-
-            ReadProcessMemory(processId, requredBaseExperienceAddress, buffer, buffer.Length, out bytesRead);
-            if (bytesRead != 4)
-            {
-                return Int32.MinValue;
-            }
-
-            return BitConverter.ToInt32(buffer, 0);
+            return getIntAddress(requredBaseExperienceAddress, 4);
         }
 
         public int GetCurrentClassExperience()
         {
-            if (!Attached)
-            {
-                return Int32.MinValue;
-            }
+            int offset = GetCurrentClassExperienceOffset();
 
-            ReadProcessMemory(processId, currentClassExperienceAddress, buffer, buffer.Length, out bytesRead);
-            if (bytesRead != 4)
-            {
-                return Int32.MinValue;
-            }
+            IntPtr currentClassExperienceBase = (IntPtr)getIntAddress(currentClassExperienceAddress, 4);
+            IntPtr newAddress = IntPtr.Add(currentClassExperienceBase, offset);
 
-            return BitConverter.ToInt32(buffer, 0);
+            int value = getIntAddress(newAddress, 4);
+
+            return value;
+        }
+
+        public int GetCurrentClassExperienceOffset()
+        {
+            int classTier = GetClassTier();
+
+            /*
+            esi = 0x1
+            0x1 * 0x8 = 0x8
+            ecx = 0x8 - 0x1 = 0x7
+            0x7 * 4 + 0xC = 0x28
+            0x28 + 0x8 = 30
+            */
+
+            int offset = classTier;
+            offset *= 0x8;
+            offset -= classTier;
+            offset *= 4;
+            offset += 0xC;
+            offset += 0x8;
+
+            return offset;
         }
 
         private IntPtr GetCurrentBaseExperiencePtr(Process process)
