@@ -6,7 +6,7 @@ namespace TOSExpViewer.Core
     {
         public const string INFINITY = "\u221E";
 
-        internal static int MAX_CLASS_LEVEL = 15;
+        internal static int MAX_CLASS_LEVEL = 14;
 
         internal static int MAX_CLASS_RANK = 10;
 

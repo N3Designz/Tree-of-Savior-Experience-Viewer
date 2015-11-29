@@ -18,6 +18,7 @@ namespace TOSExpViewer.ViewModels
         private readonly List<MenuItem> baseThemeMenuItems = new List<MenuItem>();
         private readonly List<MenuItem> accentColorMenuItems = new List<MenuItem>();
         private readonly List<MenuItem> classLevelMenuItems = new List<MenuItem>();
+        private readonly List<MenuItem> classRankMenuItems = new List<MenuItem>();
 
         public SettingsViewModel()
         {
@@ -37,8 +38,8 @@ namespace TOSExpViewer.ViewModels
 
             InitializeExperienceControlMenuItems(experienceControls);
             InitializeThemeMenuItems();
-            InitializeClassLevelMenuItems();
             InitializeClassRankMenuItems();
+            InitializeClassLevelMenuItems();
         }
 
         public BindableCollection<MenuItem> MenuItems { get; set; } = new BindableCollection<MenuItem>();
@@ -170,48 +171,63 @@ namespace TOSExpViewer.ViewModels
             MenuItems.AddRange(new[] { baseThemeRootMenuItem, accentColorRootMenuItem });
         }
 
-        private void InitializeClassLevelMenuItems()
-        {
-            var baseClassLevelMenuItem = new MenuItem(classLevelMenuItems) { MenuItemText = "Class Level" };
-
-            for(int classLevel = 1; classLevel <= Constants.MAX_CLASS_LEVEL; classLevel++)
-            {
-                Action action = () =>
-                {
-                };
-
-                var menuItem = new MenuItem(action)
-                {
-                    MenuItemText = classLevel.ToString(),
-                    IsCheckable = true,
-                    StaysOpenOnClick = true
-                };
-
-                baseClassLevelMenuItem.MenuItems.Add(menuItem);
-            }
-
-            MenuItems.Add(baseClassLevelMenuItem);
-        }
-
+        // TODO: these two initialize class level/rank methods can be refactored into one method...
         private void InitializeClassRankMenuItems()
         {
-            var baseClassLevelMenuItem = new MenuItem(classLevelMenuItems) { MenuItemText = "Class Rank" };
-
-            for (int classRank = 1; classRank <= Constants.MAX_CLASS_RANK; classRank++)
+            for (int classRank = 0; classRank < Constants.MAX_CLASS_RANK; classRank++)
             {
+                // I don't know why using the for loop index instead of this breaks it... probably something I don't realize about C#.
+                int currentRank = classRank + 1;
+
                 Action action = () =>
                 {
+                    Settings.Default.ClassRank = currentRank.ToString();
+                    Settings.Default.Save();
                 };
 
                 var menuItem = new MenuItem(action)
                 {
-                    MenuItemText = classRank.ToString(),
+                    MenuItemText = currentRank.ToString(),
                     IsCheckable = true,
                     StaysOpenOnClick = true
                 };
 
-                baseClassLevelMenuItem.MenuItems.Add(menuItem);
+                menuItem.IsChecked = string.Equals(Settings.Default.ClassRank, menuItem.MenuItemText);
+
+                classRankMenuItems.Add(menuItem);
             }
+
+            var baseClassRankMenuItem = new MenuItem(classRankMenuItems) { MenuItemText = "Class Rank" };
+
+            MenuItems.Add(baseClassRankMenuItem);
+        }
+
+        private void InitializeClassLevelMenuItems()
+        {
+            for(int classLevel = 0; classLevel < Constants.MAX_CLASS_LEVEL; classLevel++)
+            {
+                // I don't know why using the for loop index instead of this breaks it... probably something I don't realize about C#.
+                int currentLevel = classLevel + 1;
+
+                Action action = () =>
+                {
+                    Settings.Default.ClassLevel = currentLevel.ToString();
+                    Settings.Default.Save();
+                };
+
+                var menuItem = new MenuItem(action)
+                {
+                    MenuItemText = currentLevel.ToString(),
+                    IsCheckable = true,
+                    StaysOpenOnClick = true
+                };
+
+                menuItem.IsChecked = string.Equals(Settings.Default.ClassLevel, menuItem.MenuItemText);
+
+                classLevelMenuItems.Add(menuItem);
+            }
+
+            var baseClassLevelMenuItem = new MenuItem(classLevelMenuItems) { MenuItemText = "Class Level" };
 
             MenuItems.Add(baseClassLevelMenuItem);
         }
@@ -242,6 +258,26 @@ namespace TOSExpViewer.ViewModels
             {
                 baseThemeMenuItems.ForEach(x => x.IsChecked = false);
                 var menuItem = baseThemeMenuItems.FirstOrDefault(x => string.Equals(x.MenuItemText.ReverseFriendlyString(), Settings.Default.MetroThemeBaseColor.ToString()));
+
+                if (menuItem != null)
+                {
+                    menuItem.IsChecked = true;
+                }
+            }
+            else if (e.PropertyName == nameof(Settings.Default.ClassLevel))
+            {
+                classLevelMenuItems.ForEach(x => x.IsChecked = false);
+                var menuItem = classLevelMenuItems.FirstOrDefault(x => string.Equals(x.MenuItemText, Settings.Default.ClassLevel.ToString()));
+
+                if (menuItem != null)
+                {
+                    menuItem.IsChecked = true;
+                }
+            }
+            else if (e.PropertyName == nameof(Settings.Default.ClassRank))
+            {
+                classRankMenuItems.ForEach(x => x.IsChecked = false);
+                var menuItem = classRankMenuItems.FirstOrDefault(x => string.Equals(x.MenuItemText, Settings.Default.ClassRank.ToString()));
 
                 if (menuItem != null)
                 {

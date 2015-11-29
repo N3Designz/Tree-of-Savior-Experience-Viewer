@@ -202,5 +202,29 @@ namespace TOSExpViewer.Properties {
                 this["ShowClassExperienceRow"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public string ClassLevel {
+            get {
+                return ((string)(this["ClassLevel"]));
+            }
+            set {
+                this["ClassLevel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public string ClassRank {
+            get {
+                return ((string)(this["ClassRank"]));
+            }
+            set {
+                this["ClassRank"] = value;
+            }
+        }
     }
 }
