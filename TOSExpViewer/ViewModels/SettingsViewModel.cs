@@ -8,8 +8,8 @@ using MahApps.Metro;
 using TOSExpViewer.Core;
 using TOSExpViewer.Model;
 using TOSExpViewer.Properties;
-using Action = System.Action;
 using System.Globalization;
+using Action = System.Action;
 
 namespace TOSExpViewer.ViewModels
 {
@@ -24,7 +24,7 @@ namespace TOSExpViewer.ViewModels
                 throw new InvalidOperationException("Constructor only accessible from design time");
 
             MenuItems.Add(new MenuItem() { MenuItemText = "View" });
-            InitializeMenuItems();
+            InitializeThemeMenuItems();
         }
 
         public SettingsViewModel(IExperienceControl[] experienceControls)
@@ -34,6 +34,20 @@ namespace TOSExpViewer.ViewModels
                 throw new ArgumentNullException(nameof(experienceControls));
             }
 
+            InitializeExperienceControlMenuItems(experienceControls);
+            InitializeThemeMenuItems();
+        }
+
+        public BindableCollection<MenuItem> MenuItems { get; set; } = new BindableCollection<MenuItem>();
+
+        protected override void OnActivate()
+        {
+            Settings.Default.PropertyChanged += SettingsOnPropertyChanged;
+            base.OnActivate();
+        }
+
+        private void InitializeExperienceControlMenuItems(IExperienceControl[] experienceControls)
+        {
             var experienceControlMenuItems = experienceControls.Select(x =>
             {
                 var menuItem = new MenuItem(() => x.Show = !x.Show)
@@ -53,23 +67,44 @@ namespace TOSExpViewer.ViewModels
                 };
 
                 return menuItem;
-            });
+            }).ToList();
+
+            // Toggle showing the class experience row menu item
+            Action toggleShowClassExpRow = () =>
+            {
+                foreach (var experienceControl in experienceControls)
+                {
+                    experienceControl.ShowClassValue = !experienceControl.ShowClassValue;
+                }
+
+                Settings.Default.ShowClassExperienceRow = experienceControls[0].ShowClassValue;
+                Settings.Default.Save();
+            };
+
+            var toggleShowClassExpMenuItem = new MenuItem(toggleShowClassExpRow)
+            {
+                MenuItemText = "Show class exp row",
+                StaysOpenOnClick = true,
+                IsCheckable = true,
+                IsChecked = Settings.Default.ShowClassExperienceRow
+            };
+
+            // Keep the show class experience row settings value and menu item in sync
+            experienceControls[0].PropertyChanged += (sender, args) =>
+            {
+                if (args.PropertyName == nameof(IExperienceControl.ShowClassValue))
+                {
+                    toggleShowClassExpMenuItem.IsChecked = experienceControls[0].ShowClassValue;
+                }
+            };
 
             var rootExperienceControlMenuItem = new MenuItem(experienceControlMenuItems) { MenuItemText = "View" };
+            rootExperienceControlMenuItem.MenuItems.Add(toggleShowClassExpMenuItem);
 
             MenuItems.Add(rootExperienceControlMenuItem);
-            InitializeMenuItems();
         }
 
-        public BindableCollection<MenuItem> MenuItems { get; set; } = new BindableCollection<MenuItem>();
-
-        protected override void OnActivate()
-        {
-            Settings.Default.PropertyChanged += SettingsOnPropertyChanged;
-            base.OnActivate();
-        }
-
-        private void InitializeMenuItems()
+        private void InitializeThemeMenuItems()
         {
             foreach (MetroThemeBaseColor themeBaseColor in Enum.GetValues(typeof(MetroThemeBaseColor)))
             {

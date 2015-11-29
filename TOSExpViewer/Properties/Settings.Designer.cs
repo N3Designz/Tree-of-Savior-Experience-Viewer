@@ -190,5 +190,17 @@ namespace TOSExpViewer.Properties {
                 this["HideSessionTime"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowClassExperienceRow {
+            get {
+                return ((bool)(this["ShowClassExperienceRow"]));
+            }
+            set {
+                this["ShowClassExperienceRow"] = value;
+            }
+        }
     }
 }

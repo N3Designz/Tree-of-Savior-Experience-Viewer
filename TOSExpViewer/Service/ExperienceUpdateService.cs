@@ -2,7 +2,6 @@
 using TOSExpViewer.Core;
 using TOSExpViewer.Model;
 using Caliburn.Micro;
-using System.Collections.Generic;
 
 namespace TOSExpViewer.Service
 {
@@ -18,42 +17,41 @@ namespace TOSExpViewer.Service
             if (newCurrentBaseExperience == int.MinValue || requiredBasedExp == int.MinValue ||
                 requiredBasedExp == 15) // for some reason required base exp returns as 15 when char not selected, no idea why
             {
-                Reset(experienceData);
                 experienceData.Reset();
                 return;
             }
 
-            experienceData.RequiredBaseExperience = requiredBasedExp;
+            experienceData.RequiredExperience = requiredBasedExp;
 
             if (experienceData.FirstUpdate)
             {
-                experienceData.PreviousRequiredBaseExperience = requiredBasedExp;
-                experienceData.CurrentBaseExperience = newCurrentBaseExperience;
+                experienceData.PreviousRequiredExperience = requiredBasedExp;
+                experienceData.CurrentExperience = newCurrentBaseExperience;
                 experienceData.FirstUpdate = false;
             }
-            else if (newCurrentBaseExperience != experienceData.CurrentBaseExperience) // exp hasn't changed, nothing else to do
+            else if (newCurrentBaseExperience != experienceData.CurrentExperience) // exp hasn't changed, nothing else to do
             {
-                if (experienceData.RequiredBaseExperience > experienceData.PreviousRequiredBaseExperience) // handle level up scenarios
+                if (experienceData.RequiredExperience > experienceData.PreviousRequiredExperience) // handle level up scenarios
                 {
-                    experienceData.LastExperienceGain = (experienceData.PreviousRequiredBaseExperience - experienceData.CurrentBaseExperience) + newCurrentBaseExperience;
-                    experienceData.PreviousRequiredBaseExperience = requiredBasedExp;
+                    experienceData.LastExperienceGain = (experienceData.PreviousRequiredExperience - experienceData.CurrentExperience) + newCurrentBaseExperience;
+                    experienceData.PreviousRequiredExperience = requiredBasedExp;
                 }
                 else
                 {
-                    experienceData.LastExperienceGain = newCurrentBaseExperience - experienceData.CurrentBaseExperience;
+                    experienceData.LastExperienceGain = newCurrentBaseExperience - experienceData.CurrentExperience;
                 }
 
-                experienceData.CurrentBaseExperience = newCurrentBaseExperience;
-                experienceData.GainedBaseExperience += experienceData.LastExperienceGain;
+                experienceData.CurrentExperience = newCurrentBaseExperience;
+                experienceData.GainedExperience += experienceData.LastExperienceGain;
             }
 
-            experienceData.ExperiencePerHour = (int)(experienceData.GainedBaseExperience * (TimeSpan.FromHours(1).TotalMilliseconds / experienceData.ElapsedTime.TotalMilliseconds));
+            experienceData.ExperiencePerHour = (int)(experienceData.GainedExperience * (TimeSpan.FromHours(1).TotalMilliseconds / experienceData.ElapsedTime.TotalMilliseconds));
 
             experienceData.TimeToLevel = CalculateTimeToLevel(experienceData);
             // make sure the elapsed time is kept updated every tick, must be called from experience data class
             experienceData.NotifyOfPropertyChange(() => experienceData.ElapsedTime);
 
-            experienceDataToTextService.writeToFile(experienceData);
+            experienceDataToTextService.WriteToFile(experienceData);
         }
 
         private string CalculateTimeToLevel(ExperienceData experienceData)
@@ -63,8 +61,8 @@ namespace TOSExpViewer.Service
                 return Constants.INFINITY;
             }
 
-            var totalExperienceRequired = experienceData.RequiredBaseExperience - experienceData.CurrentBaseExperience;
-            var experiencePerSecond = experienceData.GainedBaseExperience / experienceData.ElapsedTime.TotalSeconds;
+            var totalExperienceRequired = experienceData.RequiredExperience - experienceData.CurrentExperience;
+            var experiencePerSecond = experienceData.GainedExperience / experienceData.ElapsedTime.TotalSeconds;
 
             if (experiencePerSecond == 0 || double.IsNaN(experiencePerSecond))
             {
@@ -74,23 +72,6 @@ namespace TOSExpViewer.Service
             var estimatedTimeToLevel = TimeSpan.FromSeconds(totalExperienceRequired / experiencePerSecond);
 
             return estimatedTimeToLevel.ToShortDisplayFormat();
-        }
-
-        public void Reset(List<ExperienceContainer> experienceContainers)
-        {
-            foreach(ExperienceContainer experienceContainer in experienceContainers)
-            {
-                Reset(experienceContainer.ExperienceData);
-            }
-        }
-
-        private void Reset(ExperienceData experienceData)
-        {
-            // we don't want to reset all exp data values, just the current session values
-            experienceData.GainedBaseExperience = 0;
-            experienceData.StartTime = DateTime.Now;
-            experienceData.TimeToLevel = CalculateTimeToLevel(experienceData);
-            NotifyOfPropertyChange(() => experienceData.ExperiencePerHour);
         }
     }
 }

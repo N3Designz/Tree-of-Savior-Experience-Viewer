@@ -24,7 +24,7 @@
         <Style x:Key="DataTextBlockStyle" TargetType="TextBlock">
             <Setter Property="Margin" Value="7,0" />
         </Style>
-        
+
         <DataTemplate x:Key="ExperienceComponentTemplate" DataType="model:IExperienceControl">
             <StackPanel Visibility="{Binding Show, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <StackPanel.ContextMenu>
@@ -34,52 +34,36 @@
                 </StackPanel.ContextMenu>
 
                 <TextBlock Text="{Binding DisplayName}" Style="{StaticResource DataTextBlockStyle}" />
-                <TextBlock Text="{Binding Value}" Style="{StaticResource DataTextBlockStyle}" />
+                <TextBlock Text="{Binding BaseValue}" Style="{StaticResource DataTextBlockStyle}" />
+                <TextBlock Text="{Binding ClassValue}" Style="{StaticResource DataTextBlockStyle}" 
+                           Visibility="{Binding ShowClassValue, Converter={StaticResource BooleanToVisibilityConverter}}" />
             </StackPanel>
         </DataTemplate>
     </controls:MetroWindow.Resources>
-    
+
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands Visibility="{Binding ShowTitleBar, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ContentControl x:Name="Settings" cal:View.Model="{Binding SettingsViewModel}" />
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
-    
+
     <ContentControl>
         <Grid Margin="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <ItemsControl ItemsSource="{Binding ExperienceComponents}" ItemTemplate="{StaticResource ExperienceComponentTemplate}"
+                              Visibility="{Binding Attached, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+                <Button x:Name="RestartSession" Content="RESET" ToolTip="Resets the exp per hour/time to level values"
+                        Visibility="{Binding ShowResetButton, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </StackPanel>
 
-            <ItemsControl Grid.Row="0" Grid.Column="0" ItemsSource="{Binding BaseExperienceComponents}" ItemTemplate="{StaticResource ExperienceComponentTemplate}"
-                          Visibility="{Binding Attached, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-
-            <ItemsControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding ClassExperienceComponents}" ItemTemplate="{StaticResource ExperienceComponentTemplate}"
-                          Visibility="{Binding Attached, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-
-            <Button Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="Reset" Content="RESET"
-                ToolTip="Resets the exp per hour/time to level values"
-                Visibility="{Binding ShowResetButton, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
+            <TextBlock Grid.Row="0" Grid.Column="0"
                    Text="TOS CLIENT NOT RUNNING" FontSize="24" FontWeight="Bold" TextAlignment="Center" HorizontalAlignment="Center"
                    Visibility="{Binding Attached, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"/>
         </Grid>

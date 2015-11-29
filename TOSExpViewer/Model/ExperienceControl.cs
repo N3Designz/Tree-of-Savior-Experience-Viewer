@@ -6,37 +6,50 @@ using TOSExpViewer.Properties;
 
 namespace TOSExpViewer.Model
 {
-    public class ExperienceControl<T> : Screen, IExperienceControl where T : INotifyPropertyChangedEx
+    public class ExperienceControl<T> : Screen, IExperienceControl where T : class, INotifyPropertyChangedEx
     {
-        private string value;
+        private string baseValue;
         private bool show = true;
+        private bool canShowClassValue = true;
+        private bool showClassValue = true;
         private string hideComponentText;
+        private string classValue;
 
-        public ExperienceControl(string designTimeValue)
+        #region Design time constructors
+
+        public ExperienceControl(string designTimeBaseValue) : this(designTimeBaseValue, designTimeBaseValue)
+        {
+        }
+
+        public ExperienceControl(string designTimeBaseValue, string designTimeClassValue)
         {
             if (!Execute.InDesignMode)
             {
                 throw new InvalidOperationException("Constructor only accessible from design time");
             }
 
-            if (designTimeValue == null)
+            if (designTimeBaseValue == null)
             {
-                throw new ArgumentNullException(nameof(designTimeValue));
+                throw new ArgumentNullException(nameof(designTimeBaseValue));
             }
 
-            Value = designTimeValue;
+            BaseValue = designTimeBaseValue;
+            ClassValue = designTimeClassValue;
         }
 
-        /// <summary> Generic ui control data class </summary>
+        #endregion
+
         /// <param name="settingsPropertySelector">The property in the <see cref="Settings"/> class to bind to for saving the hide state</param>
-        /// <param name="propertyChanged">The class for which to listen to property change notifications</param>
-        /// <param name="propertyChangedPropertySelector">The property to watch for notifications in the <param name="propertyChanged" /> class</param>
-        /// <param name="valueFunc">A function to format the value from the <param name="propertyChanged" /> class </param>
+        /// <param name="baseExperienceObject">The class for which to listen to base experience property change notifications</param>
+        /// <param name="propertyChangedPropertySelector">The property to watch for property change notifications</param>
+        /// <param name="valueFunc">A function to format the experience value for display purposes</param>
+        /// <param name="classExperienceObject">The class for which to listen to class experience property change notifications</param>
         public ExperienceControl(
             Expression<Func<Settings, bool>> settingsPropertySelector,
-            T propertyChanged,
+            T baseExperienceObject,
             Expression<Func<T, object>> propertyChangedPropertySelector,
-            Func<T, string> valueFunc)
+            Func<T, string> valueFunc,
+            T classExperienceObject = null)
         {
             Show = !settingsPropertySelector.Compile()(Settings.Default);
 
@@ -49,23 +62,36 @@ namespace TOSExpViewer.Model
                     Settings.Default.Save();
                 }
             };
-
-            var propertyName = GetPropertyName(propertyChangedPropertySelector);
-            if (string.IsNullOrWhiteSpace(propertyName))
+            
+            var propertyChangedPropertyName = GetPropertyName(propertyChangedPropertySelector);
+            if (string.IsNullOrWhiteSpace(propertyChangedPropertyName))
             {
                 throw new InvalidOperationException(
-                    "Unable to discover property name for experience control." +
+                    "Unable to discover experience property name." +
                     $"{Environment.NewLine}Type: {typeof(T).Name}" +
                     $"{Environment.NewLine}Failed property selector: {propertyChangedPropertySelector}");
             }
 
-            propertyChanged.PropertyChanged += (sender, args) =>
+            // Hookup base experience data
+            baseExperienceObject.PropertyChanged += (sender, args) =>
             {
-                if (args.PropertyName == propertyName)
+                if (args.PropertyName == propertyChangedPropertyName)
                 {
-                    Value = valueFunc(propertyChanged);
+                    BaseValue = valueFunc(baseExperienceObject);
                 }
             };
+
+            // Hookup class experience data
+            if (classExperienceObject != null)
+            {
+                classExperienceObject.PropertyChanged += (sender, args) =>
+                {
+                    if (args.PropertyName == propertyChangedPropertyName)
+                    {
+                        ClassValue = valueFunc(classExperienceObject);
+                    }
+                };
+            }
         }
 
         /// <summary> The text to display to user when they right click on the control to hide it </summary>
@@ -80,6 +106,10 @@ namespace TOSExpViewer.Model
             }
         }
 
+        /// <summary>
+        /// Set to <b>true</b> by default <para />
+        /// Show or hide the <see cref="ExperienceControl{T}"/>
+        /// </summary>
         public virtual bool Show
         {
             get { return show; }
@@ -91,14 +121,56 @@ namespace TOSExpViewer.Model
             }
         }
 
-        public string Value
+        public string BaseValue
         {
-            get { return value; }
+            get { return baseValue; }
             set
             {
-                if (value == this.value) return;
-                this.value = value;
-                NotifyOfPropertyChange(() => Value);
+                if (value == this.baseValue) return;
+                this.baseValue = value;
+                NotifyOfPropertyChange(() => BaseValue);
+            }
+        }
+
+        public string ClassValue
+        {
+            get { return classValue; }
+            set
+            {
+                if (value == classValue) return;
+                classValue = value;
+                NotifyOfPropertyChange(() => ClassValue);
+            }
+        }
+
+        /// <summary>
+        /// Show or hide the <see cref="ClassValue"/> <para />
+        /// Set to <b>true</b> by default
+        /// </summary>
+        public bool ShowClassValue
+        {
+            get { return CanShowClassValue && showClassValue; }
+            set
+            {
+                if (value == showClassValue) return;
+                showClassValue = value;
+                NotifyOfPropertyChange(() => ShowClassValue);
+            }
+        }
+
+        /// <summary>
+        /// Hack to allow for "base value only" controls that will ignore <see cref="ShowClassValue"/> <para />
+        /// Set to <b>true</b> by default  
+        /// </summary>
+        public bool CanShowClassValue
+        {
+            get { return canShowClassValue; }
+            set
+            {
+                if (value == canShowClassValue) return;
+                canShowClassValue = value;
+                NotifyOfPropertyChange(() => CanShowClassValue);
+                NotifyOfPropertyChange(() => ShowClassValue);
             }
         }
 

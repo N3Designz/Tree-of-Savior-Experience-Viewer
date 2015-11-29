@@ -7,39 +7,40 @@ namespace TOSExpViewer.Service
 {
     class ExperienceDataToTextService
     {
-        private const string path = "stream";
+        private const string FolderName = "stream";
 
-        private bool isExperienceDataToTextServiceEnabled;
+        private readonly bool isExperienceDataToTextServiceEnabled;
 
         public ExperienceDataToTextService()
         {
             isExperienceDataToTextServiceEnabled = Boolean.Parse(ConfigurationManager.AppSettings["StreamOutput"]);
         }
 
-        public void writeToFile(ExperienceData experienceData)
+        public void WriteToFile(ExperienceData experienceData)
         {
             if(!isExperienceDataToTextServiceEnabled)
             {
                 return;
             }
-
-            Directory.CreateDirectory(path);
             
-            writeToFile("currentBaseExperience.txt", experienceData.CurrentBaseExperience.ToString("N0"));
-            writeToFile("requiredBaseExperience.txt", experienceData.RequiredBaseExperience.ToString("N0"));
-            writeToFile("killsTilNextLevel.txt", experienceData.KillsTilNextLevel.ToString("N0"));
-            writeToFile("currentBaseExperiencePercent.txt", experienceData.CurrentBaseExperiencePercent.ToString("F2") + "%");
-            writeToFile("lastExperienceGain.txt", experienceData.LastExperienceGain.ToString("N0"));
-            writeToFile("timeToLevel.txt", experienceData.TimeToLevel);
-            writeToFile("experiencePerHour.txt", experienceData.ExperiencePerHour.ToString("N0"));
+            var prefix = experienceData.DisplayName.Replace(" ", string.Empty).ToLower();
+            WriteToFile($"{prefix}_currentBaseExperience.txt", experienceData.CurrentExperience.ToString("N0"));
+            WriteToFile($"{prefix}_requiredBaseExperience.txt", experienceData.RequiredExperience.ToString("N0"));
+            WriteToFile($"{prefix}_killsTilNextLevel.txt", experienceData.KillsTilNextLevel.ToString("N0"));
+            WriteToFile($"{prefix}_currentBaseExperiencePercent.txt", experienceData.CurrentExperiencePercent.ToString("F2") + "%");
+            WriteToFile($"{prefix}_lastExperienceGain.txt", experienceData.LastExperienceGain.ToString("N0"));
+            WriteToFile($"{prefix}_timeToLevel.txt", experienceData.TimeToLevel);
+            WriteToFile($"{prefix}_experiencePerHour.txt", experienceData.ExperiencePerHour.ToString("N0"));
         }
 
-        private void writeToFile(string filename, object data)
+        private void WriteToFile(string filename, string data)
         {
-            using (StreamWriter streamWriter = new StreamWriter(path + "/" + filename))
+            if (!Directory.Exists(FolderName))
             {
-                streamWriter.Write(data);
+                Directory.CreateDirectory(FolderName);
             }
+
+            File.WriteAllText(Path.Combine(FolderName, filename), data);
         }
     }
 }

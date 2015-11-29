@@ -21,24 +21,39 @@ namespace TOSExpViewer.Core
 
         public static int GetRequiredClassExperience(int rank, int classLevel)
         {
-            if(rank < 1 || rank > 10 || classLevel < 1 || classLevel > 14)
+            GuardRankAndClass(rank, classLevel);
+
+            if (classLevel > 1)
             {
-                throw new ArgumentOutOfRangeException("You must use a rank between 1 and 10 and a class level between 1 and 14");
+                return REQUIRED_CLASS_EXPERIENCE[rank - 1, classLevel - 1] - REQUIRED_CLASS_EXPERIENCE[rank - 1, classLevel - 2];
             }
 
-            // TODO: both these methods have index out of bounds error at level 1... add a case for it later!
-            return REQUIRED_CLASS_EXPERIENCE[rank - 1, classLevel - 1] - REQUIRED_CLASS_EXPERIENCE[rank - 1, classLevel - 2];
+            return REQUIRED_CLASS_EXPERIENCE[rank - 1, classLevel - 1];
         }
 
         public static int GetCurrentClassExperienceForLevelOnly(int currentTotalClassExperience, int rank, int classLevel)
         {
-            if (rank < 1 || rank > 10 || classLevel < 1 || classLevel > 14)
-            {
-                throw new ArgumentOutOfRangeException("You must use a rank between 1 and 10 and a class level between 1 and 14");
-            }
+            GuardRankAndClass(rank, classLevel);
 
-            // subtract current experience from previous level required experience to get current experience
-            return currentTotalClassExperience - REQUIRED_CLASS_EXPERIENCE[rank - 1, classLevel - 2];
+            if (classLevel > 1)
+            {
+                // subtract current experience from previous level required experience to get current experience
+                return currentTotalClassExperience - REQUIRED_CLASS_EXPERIENCE[rank - 1, classLevel - 2];
+            }
+            
+            return currentTotalClassExperience;
+        }
+
+        private static void GuardRankAndClass(int rank, int classLevel)
+        {
+            if (rank < 1 || rank > 10)
+            {
+                throw new ArgumentOutOfRangeException(nameof(rank), "You must use a rank between 1 and 10");
+            }
+            if (classLevel < 1 || classLevel > 14)
+            {
+                throw new ArgumentOutOfRangeException(nameof(classLevel), "You must use a class level between 1 and 14");
+            }
         }
     }
 }
