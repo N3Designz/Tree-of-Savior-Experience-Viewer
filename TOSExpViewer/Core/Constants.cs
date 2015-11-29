@@ -4,11 +4,11 @@ namespace TOSExpViewer.Core
 {
     public class Constants
     {
-        public const string INFINITY = "\u221E";
+        internal const string INFINITY = "\u221E";
 
-        internal static int MAX_CLASS_LEVEL = 14;
+        internal const int MAX_CLASS_LEVEL = 15;
 
-        internal static int MAX_CLASS_RANK = 10;
+        internal const int MAX_CLASS_RANK = 10;
 
         private static readonly int[,] REQUIRED_CLASS_EXPERIENCE = new int[,] {
             { 58, 267, 653, 1231, 2011, 3004, 4217, 5657, 7330, 9243, 11399, 13804, 16462, 19377 },
