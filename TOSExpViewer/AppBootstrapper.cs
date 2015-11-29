@@ -24,119 +24,119 @@ namespace TOSExpViewer
 
             container.Singleton<IWindowManager, WindowManager>();
             container.Singleton<IEventAggregator, EventAggregator>();
-            container.Singleton<ExperienceData>("baseExperienceData");
-            container.Singleton<ExperienceData>("classExperienceData");
 
-            ExperienceData baseExperienceData = container.GetInstance<ExperienceData>("baseExperienceData");
-            IExperienceControl[] baseExperienceControls = GetExperienceControls(baseExperienceData, false);
+            var baseExperienceData = new ExperienceData() { DisplayName = "Base Experience" };
+            var classExperienceData = new ExperienceData() { DisplayName = "Class Experience" };
+            IExperienceControl[] baseExperienceControls = GetExperienceControls(baseExperienceData, classExperienceData);
 
-            ExperienceData classExperienceData = container.GetInstance<ExperienceData>("classExperienceData");
-            IExperienceControl[] classExperienceControls = GetExperienceControls(classExperienceData, false);
+            container.Handler<ShellViewModel>(simpleContainer => 
+            new ShellViewModel(
+                container.GetInstance<SettingsViewModel>(),
+                new ExperienceContainer(baseExperienceData, classExperienceData, baseExperienceControls)));
 
-            List<ExperienceContainer> experienceContainers = new List<ExperienceContainer>();
-
-            experienceContainers.Add(new ExperienceContainer(baseExperienceData, baseExperienceControls));
-            experienceContainers.Add(new ExperienceContainer(classExperienceData, classExperienceControls));
-
-            container.Handler<ShellViewModel>(simpleContainer => new ShellViewModel(container.GetInstance<SettingsViewModel>(), experienceContainers));
-
+            // TODO - refactor settings view model to just take a collection of menuitems
             container.Handler<SettingsViewModel>(simpleContainer => new SettingsViewModel(baseExperienceControls));
         }
 
-        private IExperienceControl[] GetExperienceControls(ExperienceData experienceData, bool hideHeader)
+        private IExperienceControl[] GetExperienceControls(ExperienceData baseExperienceData, ExperienceData classExperienceData)
         {
             IExperienceControl[] experienceControls = new IExperienceControl[]
             {
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideCurrentBaseExperience,
-                    experienceData,
-                    data => data.CurrentBaseExperience,
-                    data => data.CurrentBaseExperience.ToString("N0"))
+                    baseExperienceData,
+                    baseData => baseData.CurrentExperience,
+                    baseData => baseData.CurrentExperience.ToString("N0"),
+                    classExperienceData)
                 {
                     DisplayName = "Current Exp",
                     HideComponentText = "Hide Current Experience"
                 },
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideRequiredBaseExperience,
-                    experienceData,
-                    data => data.RequiredBaseExperience,
-                    data => data.RequiredBaseExperience.ToString("N0"))
+                    baseExperienceData,
+                    baseData => baseData.RequiredExperience,
+                    baseData => baseData.RequiredExperience.ToString("N0"),
+                    classExperienceData)
                 {
                     DisplayName = "Required Exp",
                     HideComponentText = "Hide Required Exp"
                 },
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideCurrentBaseExperencePercent,
-                    experienceData,
-                    data => data.CurrentBaseExperiencePercent,
-                    data => data.CurrentBaseExperiencePercent.ToString("N4"))
+                    baseExperienceData,
+                    baseData => baseData.CurrentExperiencePercent,
+                    baseData => baseData.CurrentExperiencePercent.ToString("N4"),
+                    classExperienceData)
                 {
                     DisplayName = "Current Exp %",
                     HideComponentText = "Hide Current Experience %"
                 },
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideLastExperienceGain,
-                    experienceData,
-                    data => data.LastExperienceGain,
-                    data => data.LastExperienceGain.ToString("N0"))
+                    baseExperienceData,
+                    baseData => baseData.LastExperienceGain,
+                    baseData => baseData.LastExperienceGain.ToString("N0"),
+                    classExperienceData)
                 {
-                    DisplayName = "Last Exp Gain",
+                    DisplayName = "Last Exp",
                     HideComponentText = "Hide Last Exp Gain"
                 },
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideLastExperienceGainPercent,
-                    experienceData,
-                    data => data.LastExperienceGainPercent,
-                    data => data.LastExperienceGainPercent.ToString("N4"))
+                    baseExperienceData,
+                    baseData => baseData.LastExperienceGainPercent,
+                    baseData => baseData.LastExperienceGainPercent.ToString("N4"),
+                    classExperienceData)
                 {
-                    DisplayName = "Last Exp Gain %",
+                    DisplayName = "Last Exp %",
                     HideComponentText = "Hide Last Exp Gain %"
                 },
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideKillsTilNextLevel,
-                    experienceData,
-                    data => data.KillsTilNextLevel,
-                    data => data.KillsTilNextLevel.ToString("N0"))
+                    baseExperienceData,
+                    baseData => baseData.KillsTilNextLevel,
+                    baseData => baseData.KillsTilNextLevel.ToString("N0"),
+                    classExperienceData)
                 {
                     DisplayName = "Kills TNL",
                     HideComponentText = "Hide Kills TNL"
                 },
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideExperiencePerHour,
-                    experienceData,
-                    data => data.ExperiencePerHour,
-                    data => data.ExperiencePerHour.ToString("N0"))
+                    baseExperienceData,
+                    baseData => baseData.ExperiencePerHour,
+                    baseData => baseData.ExperiencePerHour.ToString("N0"),
+                    classExperienceData)
                 {
                     DisplayName = "Exp/Hr",
                     HideComponentText = "Hide Exp/Hr"
                 },
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideTimeToLevel,
-                    experienceData,
-                    data => data.TimeToLevel,
-                    data => data.TimeToLevel)
+                    baseExperienceData,
+                    baseData => baseData.TimeToLevel,
+                    baseData => baseData.TimeToLevel,
+                    classExperienceData)
                 {
                     DisplayName = "Time TNL",
-                    HideComponentText = "Hide Time TNL"
+                    HideComponentText = "Hide Time TNL",
                 },
                 new ExperienceControl<ExperienceData>(
                     settings => settings.HideSessionTime,
-                    experienceData,
+                    baseExperienceData,
                     data => data.ElapsedTime,
                     data => data.ElapsedTime.ToShortDisplayFormat())
                 {
                     DisplayName = "Session",
-                    HideComponentText = "Hide Session Time"
+                    HideComponentText = "Hide Session Time",
+                    CanShowClassValue = false
                 }, 
             };
 
-            // TODO: this doesn't work like I had hoped. figure out a better way to hide the header.
-            if(hideHeader)
+            foreach (var experienceControl in experienceControls)
             {
-                foreach(var experienceControl in experienceControls)
-                {
-                    experienceControl.DisplayName = "";
-                }
+                experienceControl.ShowClassValue = Settings.Default.ShowClassExperienceRow;
             }
 
             return experienceControls;

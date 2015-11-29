@@ -9,7 +9,11 @@ namespace TOSExpViewer.Model
 
         bool Show { get; set; }
 
-        string Value { get; set; }
+        string BaseValue { get; set; }
+
+        string ClassValue { get; set; }
+
+        bool ShowClassValue { get; set; }
 
         void Hide();
     }

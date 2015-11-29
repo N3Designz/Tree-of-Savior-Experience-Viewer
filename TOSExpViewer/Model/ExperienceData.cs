@@ -3,72 +3,74 @@ using Caliburn.Micro;
 
 namespace TOSExpViewer.Model
 {
-    public class ExperienceData : PropertyChangedBase
+    public class ExperienceData : PropertyChangedBase, IHaveDisplayName
     {
-        private int currentBaseExperience;
-        private int requiredBaseExperience;
+        private int currentExperience;
+        private int requiredExperience;
         private int lastExperienceGain;
-        private int previousRequiredBaseExperience;
-        private int gainedBaseExperience;
+        private int previousRequiredExperience;
+        private int gainedExperience;
         private int experiencePerHour;
         private string timeToLevel;
         private DateTime startTime;
 
+        public string DisplayName { get; set; }
+
         public bool FirstUpdate { get; set; }
 
-        public int CurrentBaseExperience
+        public int CurrentExperience
         {
-            get { return currentBaseExperience; }
+            get { return currentExperience; }
             set
             {
-                if (value == currentBaseExperience)
+                if (value == currentExperience)
                 {
                     return;
                 }
 
-                currentBaseExperience = value;
-                NotifyOfPropertyChange(() => CurrentBaseExperience);
-                NotifyOfPropertyChange(() => CurrentBaseExperiencePercent);
+                currentExperience = value;
+                NotifyOfPropertyChange(() => CurrentExperience);
+                NotifyOfPropertyChange(() => CurrentExperiencePercent);
                 NotifyOfPropertyChange(() => KillsTilNextLevel);
             }
         }
 
-        public int GainedBaseExperience
+        public int GainedExperience
         {
-            get { return gainedBaseExperience; }
+            get { return gainedExperience; }
             set
             {
-                if (value == gainedBaseExperience)
+                if (value == gainedExperience)
                 {
                     return;
                 }
 
-                gainedBaseExperience = value;
-                NotifyOfPropertyChange(() => GainedBaseExperience);
+                gainedExperience = value;
+                NotifyOfPropertyChange(() => GainedExperience);
             }
         }
 
-        public float CurrentBaseExperiencePercent => (currentBaseExperience / (float)requiredBaseExperience) * 100;
+        public float CurrentExperiencePercent => (currentExperience / (float)requiredExperience) * 100;
 
-        public int RequiredBaseExperience
+        public int RequiredExperience
         {
-            get { return requiredBaseExperience; }
+            get { return requiredExperience; }
             set
             {
-                if (value == requiredBaseExperience)
+                if (value == requiredExperience)
                 {
                     return;
                 }
 
-                requiredBaseExperience = value;
-                NotifyOfPropertyChange(() => RequiredBaseExperience);
-                NotifyOfPropertyChange(() => CurrentBaseExperiencePercent);
+                requiredExperience = value;
+                NotifyOfPropertyChange(() => RequiredExperience);
+                NotifyOfPropertyChange(() => CurrentExperiencePercent);
                 NotifyOfPropertyChange(() => KillsTilNextLevel);
                 NotifyOfPropertyChange(() => LastExperienceGainPercent);
             }
         }
 
-        public double KillsTilNextLevel => Math.Ceiling((RequiredBaseExperience - CurrentBaseExperience) / (double)LastExperienceGain);
+        public double KillsTilNextLevel => Math.Ceiling((RequiredExperience - CurrentExperience) / (double)LastExperienceGain);
 
         /// <summary>  Experience gain is not differentiated between cards and monsters  </summary>
         public int LastExperienceGain
@@ -88,20 +90,20 @@ namespace TOSExpViewer.Model
             }
         }
 
-        public float LastExperienceGainPercent => (lastExperienceGain / (float) requiredBaseExperience) * 100;
+        public float LastExperienceGainPercent => (lastExperienceGain / (float) requiredExperience) * 100;
 
-        public int PreviousRequiredBaseExperience
+        public int PreviousRequiredExperience
         {
-            get { return previousRequiredBaseExperience; }
+            get { return previousRequiredExperience; }
             set
             {
-                if (value == previousRequiredBaseExperience)
+                if (value == previousRequiredExperience)
                 {
                     return;
                 }
 
-                previousRequiredBaseExperience = value;
-                NotifyOfPropertyChange(() => PreviousRequiredBaseExperience);
+                previousRequiredExperience = value;
+                NotifyOfPropertyChange(() => PreviousRequiredExperience);
             }
         }
 
@@ -151,12 +153,18 @@ namespace TOSExpViewer.Model
 
         public void Reset()
         {
-            CurrentBaseExperience = 0;
-            RequiredBaseExperience = 0;
+            FirstUpdate = true;
+            CurrentExperience = 0;
+            RequiredExperience = 0;
             LastExperienceGain = 0;
-            PreviousRequiredBaseExperience = 0;
+            PreviousRequiredExperience = 0;
             ExperiencePerHour = 0;
             StartTime = DateTime.Now;
+        }
+
+        public override string ToString()
+        {
+            return $"{DisplayName} - First Update:{FirstUpdate}, Current:{CurrentExperience}, Required:{RequiredExperience}";
         }
     }
 }
