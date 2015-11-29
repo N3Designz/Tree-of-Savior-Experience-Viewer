@@ -184,8 +184,8 @@ namespace TOSExpViewer.ViewModels
                 int a = tosMonitor.GetCurrentClassExperienceOffset();
 
                 // TODO - find a way to discover these automatically or at least make them configurable
-                const int classRank = 4;
-                const int classLevel = 7;
+                const int classRank = 5;
+                const int classLevel = 2;
 
                 // TODO: come up with clever solution to just iterate over this and call the right type of experience instead
                 experienceUpdateService.UpdateExperienceValues(

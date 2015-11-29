@@ -17,6 +17,7 @@ namespace TOSExpViewer.ViewModels
     {
         private readonly List<MenuItem> baseThemeMenuItems = new List<MenuItem>();
         private readonly List<MenuItem> accentColorMenuItems = new List<MenuItem>();
+        private readonly List<MenuItem> classLevelMenuItems = new List<MenuItem>();
 
         public SettingsViewModel()
         {
@@ -36,6 +37,8 @@ namespace TOSExpViewer.ViewModels
 
             InitializeExperienceControlMenuItems(experienceControls);
             InitializeThemeMenuItems();
+            InitializeClassLevelMenuItems();
+            InitializeClassRankMenuItems();
         }
 
         public BindableCollection<MenuItem> MenuItems { get; set; } = new BindableCollection<MenuItem>();
@@ -165,6 +168,52 @@ namespace TOSExpViewer.ViewModels
             }
 
             MenuItems.AddRange(new[] { baseThemeRootMenuItem, accentColorRootMenuItem });
+        }
+
+        private void InitializeClassLevelMenuItems()
+        {
+            var baseClassLevelMenuItem = new MenuItem(classLevelMenuItems) { MenuItemText = "Class Level" };
+
+            for(int classLevel = 1; classLevel <= Constants.MAX_CLASS_LEVEL; classLevel++)
+            {
+                Action action = () =>
+                {
+                };
+
+                var menuItem = new MenuItem(action)
+                {
+                    MenuItemText = classLevel.ToString(),
+                    IsCheckable = true,
+                    StaysOpenOnClick = true
+                };
+
+                baseClassLevelMenuItem.MenuItems.Add(menuItem);
+            }
+
+            MenuItems.Add(baseClassLevelMenuItem);
+        }
+
+        private void InitializeClassRankMenuItems()
+        {
+            var baseClassLevelMenuItem = new MenuItem(classLevelMenuItems) { MenuItemText = "Class Rank" };
+
+            for (int classRank = 1; classRank <= Constants.MAX_CLASS_RANK; classRank++)
+            {
+                Action action = () =>
+                {
+                };
+
+                var menuItem = new MenuItem(action)
+                {
+                    MenuItemText = classRank.ToString(),
+                    IsCheckable = true,
+                    StaysOpenOnClick = true
+                };
+
+                baseClassLevelMenuItem.MenuItems.Add(menuItem);
+            }
+
+            MenuItems.Add(baseClassLevelMenuItem);
         }
 
         private void ChangeTheme(AppTheme baseColor, Accent accentColor)
