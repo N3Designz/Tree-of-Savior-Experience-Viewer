@@ -97,6 +97,7 @@
     <Compile Include="Model\ExperienceContainer.cs" />
     <Compile Include="Model\IExperienceControl.cs" />
     <Compile Include="Model\ExperienceData.cs" />
+    <Compile Include="Service\ExperienceUtilityService.cs" />
     <Compile Include="UI\InvertedBooleanToVisibilityConverter.cs" />
     <Compile Include="Model\MenuItem.cs" />
     <Compile Include="Service\ExperienceDataToTextService.cs" />
