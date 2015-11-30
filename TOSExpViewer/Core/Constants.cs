@@ -334,8 +334,6 @@ namespace TOSExpViewer.Core
 
         public static int GetRequiredClassExperience(int rank, int classLevel)
         {
-            Console.WriteLine("req exp: " + GetRequiredBaseExperience(200));
-
             GuardRankAndClass(rank, classLevel);
 
             if (classLevel > 1)
