@@ -6,7 +6,7 @@ using TOSExpViewer.Properties;
 
 namespace TOSExpViewer.Model
 {
-    public class ExperienceControl<T> : Screen, IExperienceControl where T : class, INotifyPropertyChangedEx
+    public class ExperienceControl<T> : PropertyChangedBase, IExperienceControl where T : class, INotifyPropertyChangedEx
     {
         private string baseValue;
         private bool show = true;
@@ -191,5 +191,7 @@ namespace TOSExpViewer.Model
             var unary = expression.Body as UnaryExpression;
             return member ?? unary?.Operand as MemberExpression;
         }
+
+        public string DisplayName { get; set; }
     }
 }

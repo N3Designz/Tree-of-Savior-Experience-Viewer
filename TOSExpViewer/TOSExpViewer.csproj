@@ -91,18 +91,25 @@
     <Compile Include="Core\MetroThemeBaseColour.cs" />
     <Compile Include="Core\MetroThemeColours.cs" />
     <Compile Include="Core\Extensions.cs" />
+    <Compile Include="Core\MetroWindowManager.cs" />
     <Compile Include="Core\WindowSettingsBuilder.cs" />
+    <Compile Include="Model\ExpCard.cs" />
     <Compile Include="Model\ExperienceContainer.cs" />
     <Compile Include="Model\IExperienceControl.cs" />
     <Compile Include="Model\ExperienceData.cs" />
-    <Compile Include="Core\InvertedBooleanConverter.cs" />
+    <Compile Include="UI\InvertedBooleanToVisibilityConverter.cs" />
     <Compile Include="Model\MenuItem.cs" />
     <Compile Include="Service\ExperienceDataToTextService.cs" />
     <Compile Include="Model\ExperienceControl.cs" />
     <Compile Include="Service\ExperienceUpdateService.cs" />
+    <Compile Include="UI\InverseBooleanConverter.cs" />
+    <Compile Include="ViewModels\ExpCardCalculatorViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Model\TosMonitor.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="Views\ExpCardCalculatorView.xaml.cs">
+      <DependentUpon>ExpCardCalculatorView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -136,6 +143,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\ExpCardCalculatorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ShellView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

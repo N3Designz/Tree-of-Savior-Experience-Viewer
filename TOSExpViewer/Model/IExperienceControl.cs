@@ -2,7 +2,7 @@ using Caliburn.Micro;
 
 namespace TOSExpViewer.Model
 {
-    public interface IExperienceControl : IScreen
+    public interface IExperienceControl : INotifyPropertyChangedEx, IHaveDisplayName
     {
         /// <summary> The text to display to user when they right click on the control to hide it </summary>
         string HideComponentText { get; set; }
