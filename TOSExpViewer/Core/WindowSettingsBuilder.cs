@@ -71,6 +71,24 @@ namespace TOSExpViewer.Core
             return this;
         }
 
+        public WindowSettingsBuilder HideIcon()
+        {
+            settings.ShowIconOnTitleBar = false;
+            return this;
+        }
+
+        public WindowSettingsBuilder HideMinimizeButton()
+        {
+            settings.ShowMinButton = false;
+            return this;
+        }
+
+        public WindowSettingsBuilder HideMaximizeButton()
+        {
+            settings.ShowMaxRestoreButton = false;
+            return this;
+        }
+
         public ExpandoObject Create()
         {
             return settings;

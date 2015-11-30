@@ -6,7 +6,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:cal="http://www.caliburnproject.org"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:core="clr-namespace:TOSExpViewer.Core"
     xmlns:viewModels="clr-namespace:TOSExpViewer.ViewModels"
     xmlns:model="clr-namespace:TOSExpViewer.Model"
     mc:Ignorable="d"
@@ -16,11 +15,10 @@
     SizeToContent="WidthAndHeight"
     MinHeight="55"
     ShowTitleBar="{Binding ShowTitleBar}" ShowMinButton="{Binding ShowTitleBar}" ShowMaxRestoreButton="{Binding ShowTitleBar}" ShowCloseButton="{Binding ShowTitleBar}"
-    cal:Message.Attach="[LocationChanged] = [WindowMoved()];[MouseDoubleClick] = [InterceptWindowDoubleClick($eventArgs)]" Icon="..\tos-exp.ico" Title="Tree of Savior Experience Viewer" TitleCaps="False">
+    cal:Message.Attach="[LocationChanged] = [WindowMoved()];[MouseDoubleClick] = [InterceptWindowDoubleClick($eventArgs)]" Icon="..\tos-exp.ico" 
+    Title="Tree of Savior Experience Viewer" TitleCaps="False">
     <!-- NOTE that the settings above for the window may be overridden during the app bootstrapper OnStartup() method -->
     <controls:MetroWindow.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <core:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" />
         <Style x:Key="DataTextBlockStyle" TargetType="TextBlock">
             <Setter Property="Margin" Value="7,0" />
         </Style>
@@ -43,6 +41,8 @@
 
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands Visibility="{Binding ShowTitleBar, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Button x:Name="ShowExpCardCalculator" Content="Card Calculator" IsEnabled="{Binding ExpCardCalculatorViewModel.IsActive, Converter={StaticResource InverseBooleanConverter}}" 
+                    cal:Message.Attach="[Click] = [ShowExpCardCalculator($source)]" />
             <ContentControl x:Name="Settings" cal:View.Model="{Binding SettingsViewModel}" />
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>

@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Caliburn.Micro;
@@ -17,12 +18,14 @@ namespace TOSExpViewer.ViewModels
 {
     public class ShellViewModel : Screen
     {
+        private readonly IWindowManager windowManager;
         private readonly DispatcherTimer timer = new DispatcherTimer();
         private readonly ExperienceUpdateService experienceUpdateService;
 
         private TosMonitor tosMonitor;
         private bool attached;
         private bool showTitleBar = true;
+        private bool canShowExpCardCalculator;
 
         public ShellViewModel()
         {
@@ -49,19 +52,32 @@ namespace TOSExpViewer.ViewModels
             }
         }
 
-        public ShellViewModel(SettingsViewModel settingsViewModelViewModel, ExperienceContainer experienceContainer)
+        public ShellViewModel(
+            SettingsViewModel settingsViewModelViewModel, 
+            ExperienceContainer experienceContainer,
+            ExpCardCalculatorViewModel expCardCalculatorViewModel,
+            IWindowManager windowManager)
         {
             if (settingsViewModelViewModel == null)
             {
                 throw new ArgumentNullException(nameof(settingsViewModelViewModel));
             }
-
             if (experienceContainer == null)
             {
                 throw new ArgumentNullException(nameof(experienceContainer));
             }
-
+            if (expCardCalculatorViewModel == null)
+            {
+                throw new ArgumentNullException(nameof(expCardCalculatorViewModel));
+            }
+            if (windowManager == null)
+            {
+                throw new ArgumentNullException(nameof(windowManager));
+            }
+            
+            this.windowManager = windowManager;
             ExperienceContainer = experienceContainer;
+            ExpCardCalculatorViewModel = expCardCalculatorViewModel;
 
             SettingsViewModel = settingsViewModelViewModel;
             SettingsViewModel.ActivateWith(this);
@@ -69,13 +85,14 @@ namespace TOSExpViewer.ViewModels
             experienceUpdateService = new ExperienceUpdateService();
 
             ExperienceComponents = new BindableCollection<IExperienceControl>(ExperienceContainer.ExperienceControls);
-
             timer.Tick += TimerOnTick;
         }
 
         public override string DisplayName { get; set; } = "Tree of Savior Experience Viewer";
 
         public ExperienceContainer ExperienceContainer { get; set; }
+
+        public ExpCardCalculatorViewModel ExpCardCalculatorViewModel { get; set; }
 
         public BindableCollection<IExperienceControl> ExperienceComponents { get; set; }
 
@@ -115,6 +132,32 @@ namespace TOSExpViewer.ViewModels
         public bool ShowResetButton => Attached &&
                                        (!Settings.Default.HideExperiencePerHour ||
                                        !Settings.Default.HideTimeToLevel);
+
+        public bool CanShowExpCardCalculator
+        {
+            get { return canShowExpCardCalculator; }
+            set
+            {
+                if (value == canShowExpCardCalculator) return;
+                canShowExpCardCalculator = value;
+                NotifyOfPropertyChange(() => CanShowExpCardCalculator);
+            }
+        }
+
+        public void ShowExpCardCalculator(ContentControl sender)
+        {
+            if (ExpCardCalculatorViewModel.IsActive) return;
+
+            var senderPosition = sender.PointToScreen(new Point()); // allows us to position the new window below the button we just clicked
+            var settings = new WindowSettingsBuilder()
+                .SizeToContent()
+                .WithTopLeft(senderPosition.Y + sender.ActualHeight, senderPosition.X)
+                .HideMaximizeButton()
+                .HideMinimizeButton()
+                .HideIcon()
+                .Create();
+            windowManager.ShowWindow(ExpCardCalculatorViewModel, null, settings);
+        }
 
         public void InterceptWindowDoubleClick(MouseButtonEventArgs args)
         {
@@ -157,7 +200,7 @@ namespace TOSExpViewer.ViewModels
             base.TryClose(dialogResult);
         }
 
-        private void TimerOnTick(object sender, EventArgs eventArgs)
+        private async void TimerOnTick(object sender, EventArgs eventArgs)
         {
             if (!IsActive || tosMonitor == null)
             {
@@ -200,7 +243,7 @@ namespace TOSExpViewer.ViewModels
             catch (Exception ex)
             {
                 timer.Stop();
-                ErrorAndClose("Error polling for experience", ex.Message);
+                await ErrorAndClose("Error polling for experience", ex.Message);
             }
         }
 

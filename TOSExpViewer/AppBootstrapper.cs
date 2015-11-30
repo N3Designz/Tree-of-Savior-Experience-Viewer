@@ -22,17 +22,20 @@ namespace TOSExpViewer
         {
             container = new SimpleContainer();
 
-            container.Singleton<IWindowManager, WindowManager>();
+            container.Singleton<IWindowManager, MetroWindowManager>();
             container.Singleton<IEventAggregator, EventAggregator>();
 
             var baseExperienceData = new ExperienceData() { DisplayName = "Base Experience" };
             var classExperienceData = new ExperienceData() { DisplayName = "Class Experience" };
             IExperienceControl[] baseExperienceControls = GetExperienceControls(baseExperienceData, classExperienceData);
 
-            container.Handler<ShellViewModel>(simpleContainer => 
-            new ShellViewModel(
-                container.GetInstance<SettingsViewModel>(),
-                new ExperienceContainer(baseExperienceData, classExperienceData, baseExperienceControls)));
+            container.Handler<ShellViewModel>(simpleContainer =>
+                                              new ShellViewModel(
+                                                  container.GetInstance<SettingsViewModel>(),
+                                                  new ExperienceContainer(baseExperienceData, classExperienceData,
+                                                  baseExperienceControls),
+                                                  new ExpCardCalculatorViewModel(),
+                                                  container.GetInstance<IWindowManager>()));
 
             // TODO - refactor settings view model to just take a collection of menuitems
             container.Handler<SettingsViewModel>(simpleContainer => new SettingsViewModel(baseExperienceControls));
