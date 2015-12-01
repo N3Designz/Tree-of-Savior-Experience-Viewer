@@ -1,4 +1,6 @@
 ﻿using System;
+using TOSExpViewer.Core;
+using TOSExpViewer.Model;
 
 namespace TOSExpViewer.Service
 {
@@ -321,12 +323,34 @@ namespace TOSExpViewer.Service
             { 2689951, 12359771, 30158602, 56790596, 92785144, 138572544, 194518144, 260941056, 338125536, 426328576, 525785184, 636712192, 759311232, 893770752 }
         };
 
-        public static int GetRequiredBaseExperience(int level)
+        // TODO: better way to determine the difference besides using an enumeration? base level doesn't need rank but class level does so it's kinda ugly/messy.
+        public static int GetRequiredExperienceForLevel(ExperienceType experienceType, int level, int rank)
+        {
+            int requiredExperience = 0;
+
+            switch(experienceType)
+            {
+                case ExperienceType.BASE:
+                    requiredExperience = GetRequiredBaseExperience(level);
+                    break;
+
+                case ExperienceType.CLASS:
+                    requiredExperience = GetRequiredClassExperience(rank, level);
+                    break;
+
+                default:
+                    break;
+            }
+
+            return requiredExperience;
+        }
+
+        private static int GetRequiredBaseExperience(int level)
         {
             return REQUIRED_BASE_EXPERIENCE[level - 2];
         }
 
-        public static int GetRequiredClassExperience(int rank, int classLevel)
+        private static int GetRequiredClassExperience(int rank, int classLevel)
         {
             GuardRankAndClass(rank, classLevel);
 
@@ -361,6 +385,16 @@ namespace TOSExpViewer.Service
             {
                 throw new ArgumentOutOfRangeException(nameof(classLevel), "You must use a class level between 1 and 14");
             }
+        }
+
+        public static int GetMaxBaseLevel(ExperienceType experienceType)
+        {
+            if(experienceType == ExperienceType.BASE)
+            {
+                return REQUIRED_BASE_EXPERIENCE.Length;
+            }
+
+            return Constants.MAX_CLASS_LEVEL;
         }
     }
 }

@@ -238,7 +238,7 @@ namespace TOSExpViewer.ViewModels
                 experienceUpdateService.UpdateExperienceValues(
                     ExperienceContainer.ClassExperienceData,
                     currentExperience: ExperienceUtilityService.GetCurrentClassExperienceForLevelOnly(tosMonitor.GetCurrentClassExperience(), classRank, classLevel),
-                    requiredExperience: ExperienceUtilityService.GetRequiredClassExperience(classRank, classLevel));
+                    requiredExperience: ExperienceUtilityService.GetRequiredExperienceForLevel(ExperienceType.CLASS, classRank, classLevel));
             }
             catch (Exception ex)
             {

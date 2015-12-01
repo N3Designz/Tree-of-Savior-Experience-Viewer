@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using Caliburn.Micro;
 using TOSExpViewer.Model;
+using TOSExpViewer.Service;
 
 namespace TOSExpViewer.ViewModels
 {
@@ -20,6 +21,7 @@ namespace TOSExpViewer.ViewModels
 
                 expCard.PropertyChanged += ExpCardOnPropertyChanged;
             }
+
             base.OnInitialize();
         }
 
@@ -32,16 +34,33 @@ namespace TOSExpViewer.ViewModels
 
         public override string DisplayName { get; set; } = "Card Calculator";
 
+        public int BaseLevel { get; set; } = 2;
+
         public long TotalBaseExperience => Items.Sum(x => x.BaseExperience * x.Amount);
 
         public long TotalClassExperience => Items.Sum(x => x.ClassExperience * x.Amount);
-        
+
+        public ExperienceCardData BaseExperienceCardData { get; set; } = new ExperienceCardData();
+
+        public ExperienceCardData ClassExperienceCardData { get; set; } = new ExperienceCardData();
+
         private void ExpCardOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ExpCard.Amount))
-            {
+            { 
                 NotifyOfPropertyChange(() => TotalBaseExperience);
                 NotifyOfPropertyChange(() => TotalClassExperience);
+
+                // TODO: retrieve current experience from memory
+                int currentExperience = 0;
+
+                CardCalculatorService.calculateLevel(BaseLevel, 1, currentExperience, TotalBaseExperience, ExperienceType.BASE, BaseExperienceCardData);
+
+                // TODO: update calculations to work with class levels as well
+                //CardCalculatorService.calculateLevel(8, 1, currentExperience, TotalClassExperience, ExperienceType.CLASS, ClassExperienceCardData);
+
+                NotifyOfPropertyChange(() => BaseExperienceCardData);
+                NotifyOfPropertyChange(() => ClassExperienceCardData);
             }
         }
     }
