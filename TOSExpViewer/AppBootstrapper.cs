@@ -29,12 +29,13 @@ namespace TOSExpViewer
             var classExperienceData = new ExperienceData() { DisplayName = "Class Experience" };
             IExperienceControl[] baseExperienceControls = GetExperienceControls(baseExperienceData, classExperienceData);
 
+            ExperienceContainer experienceContainer = new ExperienceContainer(baseExperienceData, classExperienceData, baseExperienceControls);
+
             container.Handler<ShellViewModel>(simpleContainer =>
                                               new ShellViewModel(
                                                   container.GetInstance<SettingsViewModel>(),
-                                                  new ExperienceContainer(baseExperienceData, classExperienceData,
-                                                  baseExperienceControls),
-                                                  new ExpCardCalculatorViewModel(),
+                                                  experienceContainer,
+                                                  new ExpCardCalculatorViewModel(experienceContainer),
                                                   container.GetInstance<IWindowManager>()));
 
             // TODO - refactor settings view model to just take a collection of menuitems

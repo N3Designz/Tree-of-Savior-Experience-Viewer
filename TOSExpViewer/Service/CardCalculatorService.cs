@@ -6,7 +6,6 @@ namespace TOSExpViewer.Service
     {
         public static void calculateLevel(int currentLevel, int rank, long currentExperience, long totalExperienceFromCards, ExperienceType experienceType, ExperienceCardData experienceCardData)
         {
-            // TODO: need to get currentBaseExperience from memory to add to this variable.
             long totalExperienceGainedFromLevels = ExperienceUtilityService.GetRequiredExperienceForLevel(experienceType, currentLevel, rank) + currentExperience;
             long finalExperienceGained = totalExperienceGainedFromLevels + totalExperienceFromCards;
 

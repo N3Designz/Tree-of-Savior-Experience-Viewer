@@ -12,6 +12,13 @@ namespace TOSExpViewer.ViewModels
         private const int MAX_EXP_CARD_LEVEL = 10;
         private readonly List<ExpCard> expCards = new List<ExpCard>();
 
+        private ExperienceContainer experienceContainer;
+
+        public ExpCardCalculatorViewModel(ExperienceContainer experienceContainer)
+        {
+            this.experienceContainer = experienceContainer;
+        }
+
         protected override void OnInitialize()
         {
             for (int i = 0; i < MAX_EXP_CARD_LEVEL; i++)
@@ -51,10 +58,7 @@ namespace TOSExpViewer.ViewModels
                 NotifyOfPropertyChange(() => TotalBaseExperience);
                 NotifyOfPropertyChange(() => TotalClassExperience);
 
-                // TODO: retrieve current experience from memory
-                int currentExperience = 0;
-
-                CardCalculatorService.calculateLevel(BaseLevel, 1, currentExperience, TotalBaseExperience, ExperienceType.BASE, BaseExperienceCardData);
+                CardCalculatorService.calculateLevel(BaseLevel, 1, experienceContainer.BaseExperienceData.CurrentExperience, TotalBaseExperience, ExperienceType.BASE, BaseExperienceCardData);
 
                 // TODO: update calculations to work with class levels as well
                 //CardCalculatorService.calculateLevel(8, 1, currentExperience, TotalClassExperience, ExperienceType.CLASS, ClassExperienceCardData);
