@@ -324,7 +324,7 @@ namespace TOSExpViewer.Service
         };
 
         // TODO: better way to determine the difference besides using an enumeration? base level doesn't need rank but class level does so it's kinda ugly/messy.
-        public static int GetRequiredExperienceForLevel(ExperienceType experienceType, int level, int rank)
+        public static int GetRequiredExperienceForLevel(ExperienceType experienceType, int rank, int level)
         {
             int requiredExperience = 0;
 
